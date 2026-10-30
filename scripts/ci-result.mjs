@@ -4,6 +4,7 @@
 // Reads the tool's report file (if present) and keeps only a SAFE summary:
 // counts, rule ids and file paths - never secret values (gitleaks runs with --redact).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readSarifDir } from './sarif.mjs';
 
 const id = process.argv[2];
 const status = process.env.CHECK_STATUS === 'success' ? 'passed' : 'failed';
@@ -83,6 +84,19 @@ const CHECKS = {
           low: v.low ?? null,
         },
         findings: Object.values(report?.vulnerabilities || {}).slice(0, 20).map((x) => ({ package: x.name, severity: x.severity, range: x.range })),
+      };
+    },
+  },
+  codeql: {
+    name: 'Code scanning (CodeQL)',
+    tool: 'GitHub CodeQL: javascript-typescript, security-extended queries',
+    gate: 'Any CRITICAL finding (security-severity >= 9.0) fails the job; all findings are uploaded to GitHub code scanning.',
+    summarise() {
+      const findings = readSarifDir('sarif-results');
+      const by = (b) => (findings ? findings.filter((f) => f.severity === b).length : null);
+      return {
+        summary: { critical: by('critical'), high: by('high'), medium: by('medium'), low: by('low') },
+        findings: (findings || []).slice(0, 20).map((f) => ({ rule: f.rule, severity: f.severity, file: f.file, line: f.line })),
       };
     },
   },

@@ -146,4 +146,16 @@ export const AI_ISSUES = [
     after: 'Object.entries(tos).map(([to, rule]) => [statusBadge(from), statusBadge(to), RULE_LABELS[rule]])',
     fix: 'Render the human-readable RULE_LABELS exported next to TRANSITIONS, so the page cannot drift from the rules again. The page-level smoke test (every page, zero console errors) is now part of the routine before each commit; unit tests alone did not cover page rendering.',
   },
+  {
+    id: 12,
+    date: '2026-10-30',
+    milestone: 'H1 (hardening)',
+    category: 'Supply chain / CI',
+    foundBy: 'AI self-check with `git ls-remote` before writing the workflow',
+    issue:
+      "The AI's usual SHA lookup (`git ls-remote ... refs/tags/<tag>`) returned 8498dc4… for github/codeql-action v4.39.1. That tag is ANNOTATED, so this SHA is the tag object, not the commit. Pinning `uses: …@<tag-object-sha>` either fails to resolve or does not pin the code that was reviewed. The earlier actions/* pins were checked and are lightweight tags (tag SHA = commit SHA).",
+    before: 'uses: github/codeql-action/init@8498dc4c2b27cdd99baf0f87955b29ebbf30c78d # v4.39.1   (tag object)',
+    after: 'uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1   (peeled commit, refs/tags/v4.39.1^{})',
+    fix: "Always resolve the peeled ref (`refs/tags/<tag>^{}`) and fall back to the tag ref only for lightweight tags. Dependabot keeps the pins current.",
+  },
 ];

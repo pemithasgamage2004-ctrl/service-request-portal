@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 
 const env = process.env;
 const inCi = env.GITHUB_ACTIONS === 'true';
-const ORDER = ['lint', 'secrets', 'sast', 'deps'];
+const ORDER = ['lint', 'secrets', 'sast', 'codeql', 'deps'];
 
 const checks = existsSync('ci-results')
   ? readdirSync('ci-results')
