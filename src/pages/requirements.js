@@ -1,8 +1,88 @@
 import { el, pageHeader } from '../lib/dom.js';
+import { TRANSITIONS } from '../lib/workflow.js';
+import { PROBLEM, ROLES_TABLE, USER_STORIES, BRIEFING, ASSUMPTIONS, NON_FUNCTIONAL } from '../content/requirements.js';
+import { statusBadge } from '../lib/ui.js';
+
+const table = (head, rows) =>
+  el('div', { class: 'table-wrap' },
+    el('table', {},
+      el('thead', {}, el('tr', {}, head.map((h) => el('th', { text: h })))),
+      el('tbody', {}, rows.map((r) => el('tr', {}, r.map((c) => el('td', {}, c))))),
+    ),
+  );
 
 export default function render(root) {
   root.append(
-    pageHeader('Requirements', 'Problem statement, roles, user stories with acceptance criteria, briefing Q&A and assumptions.'),
-    el('div', { class: 'placeholder', text: 'This section is being built (milestone M6).' }),
+    pageHeader('Requirements', 'Problem, users and roles, user stories with acceptance criteria, briefing questions and the assumptions this portal is built on.'),
+    el('nav', { class: 'toc card', attrs: { 'aria-label': 'On this page' } },
+      ['Problem', 'Users & roles', 'Workflow', 'User stories', 'Briefing Q&A', 'Assumptions', 'Non-functional'].map((t, i) =>
+        el('a', { href: `#/requirements`, text: t, dataset: { target: `req-${i}` }, on: { click: (e) => { e.preventDefault(); document.getElementById(`req-${i}`)?.scrollIntoView({ behavior: 'smooth' }); } } }),
+      ),
+    ),
+
+    el('section', { class: 'card', attrs: { id: 'req-0' } }, el('h2', { text: 'Problem' }), PROBLEM.map((p) => el('p', { text: p }))),
+
+    el('section', { class: 'card', attrs: { id: 'req-1' } },
+      el('h2', { text: 'Users & roles' }),
+      table(['Role', 'Who', 'Can', 'Cannot'], ROLES_TABLE.map((r) => [el('strong', { text: r.role }), r.who, r.can, r.cannot])),
+    ),
+
+    el('section', { class: 'card', attrs: { id: 'req-2' } },
+      el('h2', { text: 'Workflow' }),
+      el('div', { class: 'wf-diagram', attrs: { role: 'img', 'aria-label': 'Submitted, then Under Review, then Approved or Rejected; Approved then Completed' } },
+        statusBadge('Submitted'), el('span', { class: 'arrow', text: '→' }), statusBadge('Under Review'), el('span', { class: 'arrow', text: '→' }),
+        el('span', { class: 'wf-branch' },
+          el('span', {}, statusBadge('Approved'), el('span', { class: 'arrow', text: '→' }), statusBadge('Completed')),
+          el('span', {}, statusBadge('Rejected'), el('span', { class: 'muted small', text: ' (final)' })),
+        ),
+      ),
+      el('p', { class: 'small muted', text: 'Allowed transitions (generated from the rules the app enforces in src/lib/workflow.js):' }),
+      table(['From', 'To', 'Allowed role'],
+        Object.entries(TRANSITIONS).flatMap(([from, tos]) =>
+          Object.keys(tos).length
+            ? Object.entries(tos).map(([to, roles]) => [statusBadge(from), statusBadge(to), roles.join(', ')])
+            : [[statusBadge(from), el('span', { class: 'muted', text: '(none - final status)' }), '-']],
+        ),
+      ),
+    ),
+
+    el('section', { class: 'card', attrs: { id: 'req-3' } },
+      el('h2', { text: `User stories (${USER_STORIES.length})` }),
+      USER_STORIES.map((s) =>
+        el('article', { class: 'story' },
+          el('h3', {}, el('span', { class: 'badge badge-brand', text: s.id }), ` ${s.title}`),
+          el('p', { class: 'story-text', text: s.story }),
+          el('ol', { class: 'gwt' }, s.criteria.map(([g, w, t]) =>
+            el('li', {},
+              el('div', {}, el('strong', { text: 'Given ' }), g),
+              el('div', {}, el('strong', { text: 'When ' }), w),
+              el('div', {}, el('strong', { text: 'Then ' }), t),
+            ),
+          )),
+          el('p', { class: 'small muted' }, el('strong', { text: 'Implemented / verified: ' }), s.verified),
+        ),
+      ),
+    ),
+
+    el('section', { class: 'card', attrs: { id: 'req-4' } },
+      el('h2', { text: 'Briefing questions & answers' }),
+      el('div', { class: 'alert alert-warn' },
+        el('strong', { text: 'Answers pending: ' }),
+        'the answers given in the briefing have not been recorded in this version. Until they are, the portal follows the assumption listed against each question; any answer that differs will be applied and the assumption updated.'),
+      table(['#', 'Question asked', 'Answer given', 'Assumption used'], BRIEFING.map((b, i) => [
+        String(i + 1), b.q, b.answer ? b.answer : el('em', { class: 'muted', text: 'Not recorded – pending confirmation' }), b.assumption,
+      ])),
+    ),
+
+    el('section', { class: 'card', attrs: { id: 'req-5' } },
+      el('h2', { text: 'Assumptions' }),
+      el('p', { class: 'small muted', text: 'Anything not covered by the briefing. Numbers come from the same constants the app uses.' }),
+      table(['ID', 'Assumption'], ASSUMPTIONS.map((a) => [el('strong', { text: a.id }), a.text])),
+    ),
+
+    el('section', { class: 'card', attrs: { id: 'req-6' } },
+      el('h2', { text: 'Non-functional requirements' }),
+      table(['Area', 'Requirement'], NON_FUNCTIONAL.map(([a, t]) => [el('strong', { text: a }), t])),
+    ),
   );
 }

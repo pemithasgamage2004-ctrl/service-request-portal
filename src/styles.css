@@ -257,3 +257,28 @@ pre.yaml { max-height: 520px; overflow: auto; font-size: 0.78rem; }
 .flow-arrow { font-size: 1.4rem; color: var(--muted); }
 @media (max-width: 700px) { .flow-arrow { transform: rotate(90deg); width: 100%; text-align: center; } }
 .gate-proof { margin-top: 10px; }
+
+/* Requirements page */
+.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 10px 16px; }
+.toc a { font-size: 0.9rem; }
+.wf-diagram { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px; background: var(--surface-2); border-radius: 8px; margin-bottom: 10px; }
+.wf-diagram .badge { font-size: 0.85rem; padding: 3px 10px; }
+.wf-branch { display: flex; flex-direction: column; gap: 6px; border-left: 2px solid var(--border); padding-left: 10px; }
+.arrow { color: var(--muted); font-weight: 700; margin: 0 2px; }
+.story { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
+.story:first-of-type { border-top: 0; margin-top: 0; }
+.story h3 { margin: 0 0 4px; }
+.story-text { font-style: italic; }
+.gwt { padding-left: 20px; margin: 0 0 6px; }
+.gwt li { margin-bottom: 6px; }
+
+/* Handover page */
+.issue { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; background: #fcfdff; }
+.issue-head { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; }
+.before-after { gap: 10px; }
+.before-after pre { margin: 2px 0 6px; white-space: pre-wrap; word-break: break-word; font-size: 0.78rem; }
+.ba-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+.ba-before { color: var(--err); }
+.ba-after { color: var(--ok); }
+.guide ol { padding-left: 20px; }
+@media (max-width: 640px) { .before-after { grid-template-columns: minmax(0, 1fr); } }

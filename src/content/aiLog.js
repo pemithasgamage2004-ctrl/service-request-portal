@@ -8,7 +8,7 @@ export const AI_TOOLS = [
     usedFor:
       'Planning (stack, data model, KPIs, pipeline design), scaffolding code, dataset generator, workflow logic, dashboard, CI/CD workflow, page content drafts, self-review of generated code.',
     humanRole:
-      'Wrote the brief and briefing Q&A, approved the plan, reviewed every milestone before continuing, confirmed assumptions, verified the live site.',
+      'Provided the assignment brief, approved the plan, reviewed each milestone before continuing, enabled GitHub Pages, requested the failing-gate test and deleted its branch. Owns confirming the assumptions and recording the briefing answers.',
   },
 ];
 
