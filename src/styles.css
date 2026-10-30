@@ -282,3 +282,10 @@ pre.yaml { max-height: 520px; overflow: auto; font-size: 0.78rem; }
 .ba-after { color: var(--ok); }
 .guide ol { padding-left: 20px; }
 @media (max-width: 640px) { .before-after { grid-template-columns: minmax(0, 1fr); } }
+
+/* Mobile nav: show all six areas at once (no hidden, horizontally-scrolled tabs) */
+@media (max-width: 640px) {
+  .site-header { position: static; }
+  .site-nav ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; padding: 0 4px; gap: 0; }
+  .site-nav a { white-space: normal; text-align: center; padding: 8px 4px; font-size: 0.8rem; line-height: 1.25; height: 100%; display: flex; align-items: center; justify-content: center; }
+}

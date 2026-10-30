@@ -203,10 +203,10 @@ function headersSection() {
 // ---------------------------------------------------------------- App-level controls
 function controlsSection() {
   const rows = [
-    ['Cross-site scripting (XSS)', 'All rendering via textContent / createTextNode in src/lib/dom.js; innerHTML never used.', 'ESLint no-unsanitized + Semgrep no-html-sinks rule in CI; Playwright test submits <img onerror> / <script> payloads and confirms they render as text.'],
+    ['Cross-site scripting (XSS)', 'All rendering via textContent / createTextNode in src/lib/dom.js; innerHTML never used.', 'ESLint no-unsanitized + Semgrep no-html-sinks rule in CI; during development a headless-browser test submitted <img onerror> / <script> payloads and confirmed they render as plain text.'],
     ['Input validation', 'Whitelisted fields, required checks, length limits, enum checks, EMP-#### format, real dates within 0–180 days.', 'Unit tests (tests/workflow.test.js).'],
     ['Broken workflow / access rules', 'Transition matrix enforced in a pure logic layer (not just hidden buttons): only Manager can review/approve/reject/complete; Rejected and Completed are final; rejection requires a reason.', 'Unit tests cover invalid transitions and wrong roles.'],
-    ['Untrusted stored data', 'localStorage is re-validated against the schema on load; tampered records are dropped and reported.', 'Unit tests + browser test that tampers storage.'],
+    ['Untrusted stored data', 'localStorage is re-validated against the schema on load; tampered records are dropped and reported.', 'Unit tests; headless-browser test (during development) that tampers with storage.'],
     ['CSV / formula injection', 'Exported cells starting with = + - @ are prefixed with an apostrophe; RFC 4180 quoting.', 'Unit tests (tests/csv.test.js).'],
     ['Secrets', 'The app needs no secrets; .gitignore excludes env/key files.', 'Gitleaks scans the full history on every run.'],
     ['Vulnerable dependencies', 'One runtime dependency (Chart.js); dev tooling only at build time.', 'npm audit gate + Dependabot.'],

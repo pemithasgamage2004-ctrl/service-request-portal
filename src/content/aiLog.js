@@ -110,4 +110,16 @@ export const AI_ISSUES = [
     after: 'run: ./gitleaks git . --log-opts=HEAD --redact --no-banner --report-format json --report-path gitleaks.json --exit-code 1',
     fix: 'The scan now covers the full history of the commit being built (HEAD; for PRs the merge commit, so PR commits are still caught). Secrets on other branches are caught by their own PR runs. The gate itself was proven with PR #4 (run 41008488731: Gitleaks failed, Build and Deploy skipped); the next main run passed while that branch still existed.',
   },
+  {
+    id: 9,
+    date: '2026-10-30',
+    milestone: 'M7',
+    category: 'Quality / Responsive UI',
+    foundBy: 'Final QA: screenshot of every page at 375px width',
+    issue:
+      'The AI-built navigation was a single horizontally-scrolling row. On a phone only 3 of the 6 tabs were visible and the active tab (e.g. "AI Log & Handover") was scrolled out of view, so a reviewer on mobile could miss half of the required areas. The earlier automated overflow check passed because the overflow was inside the nav\'s own scroll container.',
+    before: '.site-nav ul { display: flex; overflow-x: auto; }   /* one row; tabs 4-6 off-screen on mobile */',
+    after: '@media (max-width: 640px) {\n  .site-nav ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }\n  .site-nav a { white-space: normal; text-align: center; }\n}',
+    fix: 'On small screens the nav is a 3-column grid, so all six areas are always visible (verified: 6 of 6 links fully on-screen at 375px); the header is no longer sticky on mobile to save vertical space.',
+  },
 ];
