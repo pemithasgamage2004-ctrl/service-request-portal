@@ -6,7 +6,8 @@ import { el, pageHeader } from '../lib/dom.js';
 import { DEPARTMENTS, STATUSES, PRIORITIES } from '../lib/enums.js';
 import { getRequests, subscribe, getSource, getPersona } from '../lib/store.js';
 import { filterRequests, computeKpis, countByKey, weeklyVolume } from '../lib/kpis.js';
-import { KPI_SQL, CHART_SQL, CREATE_TABLE_SQL } from '../lib/sql.js';
+import { KPI_SQL, CHART_SQL } from '../lib/sql.js';
+import { SCHEMA_SQL, VIEW_SQL, KPI_FUNCTION_SQL } from '../lib/migrations.js';
 import { isValidDate, canView } from '../lib/workflow.js';
 
 // Only the Chart.js pieces we use (tree-shaken, bundled locally - no CDN).
@@ -38,11 +39,21 @@ export default function render(root) {
   const note = el('p', { class: 'small muted source-note' });
   const kpiGrid = el('div', { class: 'grid kpi-grid' });
   const chartGrid = el('div', { class: 'grid grid-2 chart-grid' });
-  const schema = el('details', { class: 'card' },
-    el('summary', {}, el('strong', { text: 'Database schema (CREATE TABLE) behind the SQL on this page' })),
-    el('pre', {}, el('code', { text: CREATE_TABLE_SQL })),
+  const liveCall = el('code');
+  const source = el('div', { class: 'card' },
+    el('h2', { text: 'Where these numbers come from' }),
+    el('p', { class: 'small' },
+      'In Live mode the KPIs are computed by the database function ', el('code', { text: 'public.kpi_summary()' }),
+      ' below (from ', el('code', { text: 'supabase/migrations/20261030120300_reporting.sql' }), ', bundled into this page at build time), so the figures and the SQL shown are the same source. ',
+      'It is SECURITY INVOKER over a security_invoker view, so Row Level Security limits the figures to what the signed-in user may see. ',
+      'In Demo mode the same definitions run in the browser (src/lib/kpis.js); CI checks both give identical results on the sample data.'),
+    el('p', { class: 'small muted', text: 'Call with the current filters:' }),
+    el('pre', {}, liveCall),
+    el('details', {}, el('summary', { text: 'kpi_summary() function' }), el('pre', {}, el('code', { text: KPI_FUNCTION_SQL }))),
+    el('details', {}, el('summary', { text: 'v_requests view' }), el('pre', {}, el('code', { text: VIEW_SQL }))),
+    el('details', {}, el('summary', { text: 'CREATE TABLE statements (from the core schema migration)' }), el('pre', {}, el('code', { text: SCHEMA_SQL }))),
   );
-  root.append(filterBar, note, kpiGrid, chartGrid, schema);
+  root.append(filterBar, note, kpiGrid, chartGrid, source);
 
   const charts = [];
   let disposed = false;
@@ -71,6 +82,8 @@ export default function render(root) {
         note.textContent =
           `${rows.length} of ${all.length} requests visible to ${actor.label} match (${k.withdrawn} withdrawn). Dates use the Asia/Colombo calendar; overdue is evaluated against the current time. ` +
           (getSource() === 'local' ? 'Includes your changes from the Workflow page (saved in this browser).' : 'Showing the original sample data.');
+        const arg = (v) => (v ? `'${v}'` : 'null');
+        liveCall.textContent = `select * from public.kpi_summary(\n  p_from => ${arg(filters.from)}, p_to => ${arg(filters.to)},\n  p_department => ${arg(filters.department)}, p_status => ${arg(filters.status)});`;
         for (const def of KPI_DEFS) {
           kpiCards[def.key].value.textContent = def.fmt(k[def.key]);
           kpiCards[def.key].sql.textContent = KPI_SQL[def.key](filters);

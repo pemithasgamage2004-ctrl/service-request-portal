@@ -8,6 +8,7 @@ import {
 } from '../lib/store.js';
 import { statusBadge, priorityBadge, fmtDateTime, fmtDate, toast, downloadText } from '../lib/ui.js';
 import { toCsv, REQUEST_COLUMNS } from '../lib/csv.js';
+import { localDate } from '../lib/sla.js';
 
 // Page state (reset on each visit)
 let state;
@@ -108,8 +109,8 @@ function renderForm(holder, actor) {
     holder.replaceChildren();
     return;
   }
-  const today = new Date().toISOString().slice(0, 10);
-  const maxDay = new Date(Date.now() + LIMITS.neededByMaxDaysAhead * DAY_MS).toISOString().slice(0, 10);
+  const today = localDate(Date.now());
+  const maxDay = localDate(Date.now() + LIMITS.neededByMaxDaysAhead * DAY_MS);
   const errs = {};
 
   const field = (name, label, control, hint) => {

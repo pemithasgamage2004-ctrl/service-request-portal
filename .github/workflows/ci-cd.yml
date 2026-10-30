@@ -4,9 +4,10 @@
 #   secrets ─┤
 #   sast ────┼──► build (+ security-results.json) ──► deploy (push to main only)
 #   codeql ──┤
-#   deps ────┘
+#   deps ────┤
+#   db ──────┘
 #
-# - Five independent check jobs run in parallel. `build` needs ALL of them, so a
+# - Six independent check jobs run in parallel. `build` needs ALL of them, so a
 #   failed security gate means nothing is built or deployed.
 # - Each check writes a machine-readable result (even when it fails) which `build`
 #   merges into security-results.json and publishes with the site.
@@ -58,7 +59,7 @@ jobs:
       - name: Verify sample data is reproducible from the seed
         run: |
           node scripts/generate-data.mjs
-          git diff --exit-code -- public/data
+          git diff --exit-code -- public/data supabase/seed.sql
       - name: Record result
         if: always()
         env:
@@ -171,6 +172,46 @@ jobs:
           name: result-codeql
           path: ci-results/result-codeql.json
 
+  db:
+    name: Database tests (migrations + RLS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16@sha256:1beaa3084eee2676f20a9cd9928f0bf2c5bf674f8e49f81017912183d377c61c # 16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust # throwaway CI database, no credentials needed
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      SRP_DB_TESTS: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Apply migrations + seed, run RLS / workflow / parity tests
+        run: npx vitest run tests/db --outputFile.json=db-test-results.json
+      - name: Record result
+        if: always()
+        env:
+          CHECK_STATUS: ${{ job.status }}
+        run: node scripts/ci-result.mjs db
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: result-db
+          path: ci-results/result-db.json
+
   deps:
     name: Dependency audit (npm audit)
     runs-on: ubuntu-latest
@@ -199,7 +240,7 @@ jobs:
 
   build:
     name: Build site (+ security results)
-    needs: [lint, secrets, sast, codeql, deps] # all security gates must pass
+    needs: [lint, secrets, sast, codeql, deps, db] # all security gates must pass
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

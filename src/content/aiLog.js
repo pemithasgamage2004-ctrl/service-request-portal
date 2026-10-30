@@ -158,4 +158,28 @@ export const AI_ISSUES = [
     after: 'uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1   (peeled commit, refs/tags/v4.39.1^{})',
     fix: "Always resolve the peeled ref (`refs/tags/<tag>^{}`) and fall back to the tag ref only for lightweight tags. Dependabot keeps the pins current.",
   },
+  {
+    id: 13,
+    date: '2026-10-30',
+    milestone: 'H2 (database)',
+    category: 'Logic / Client-server consistency',
+    foundBy: 'AI review while writing the server-side create_request() validation',
+    issue:
+      'The Phase 1 client checked "needed-by date is not in the past" against the UTC calendar day, but the business calendar (A8) and the new database function use Asia/Colombo. Between 18:30 and 24:00 UTC (00:00-05:30 next day in Colombo) the browser would accept a date that the server rejects, giving users a confusing server error.',
+    before: 'const today = utcDay(now);   // new Date(now).toISOString().slice(0, 10)',
+    after: 'const today = localDate(now);   // Asia/Colombo, same as (now() at time zone \'Asia/Colombo\')::date in SQL',
+    fix: 'Client validation now uses the same Colombo calendar as the database; a unit test covers the 20:00 UTC edge case. Server and client rules are now checked against each other by the DB parity tests.',
+  },
+  {
+    id: 14,
+    date: '2026-10-30',
+    milestone: 'H2 (database)',
+    category: 'Quality / Responsive UI',
+    foundBy: 'Mobile-width check of every page before commit (scrollWidth 383px at 375px)',
+    issue:
+      'The new "Where these numbers come from" card on the Dashboard contains a long inline file name (supabase/migrations/20261030120300_reporting.sql). Inline <code> does not wrap by default, so the page overflowed horizontally on phones.',
+    before: ':not(pre) > code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }',
+    after: ':not(pre) > code { ...; overflow-wrap: anywhere; }',
+    fix: 'Inline code may now wrap anywhere; all six pages re-checked at 375px (no overflow).',
+  },
 ];
