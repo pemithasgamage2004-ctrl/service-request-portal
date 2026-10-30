@@ -1,2 +1,3 @@
 # Generated data: keep exact bytes (CSV uses CRLF per RFC 4180) so the CI reproducibility diff is stable
 public/data/* -text
+supabase/seed.sql -text

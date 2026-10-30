@@ -7,7 +7,7 @@
 import {
   DEPARTMENTS, REQUEST_TYPES, PRIORITIES, STATUSES, ROLES, OPEN_STATUSES, LIMITS, DAY_MS, FULFILMENT_TEAMS,
 } from './enums.js';
-import { slaDueAt } from './sla.js';
+import { slaDueAt, localDate } from './sla.js';
 
 /**
  * from -> { to: rule }. Anything not listed is an invalid transition.
@@ -52,7 +52,6 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const ISO_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?Z$/;
 
 const clean = (v) => (typeof v === 'string' ? v.replace(CONTROL_CHARS, '').trim() : '');
-const utcDay = (ms) => new Date(ms).toISOString().slice(0, 10);
 
 /** Is `s` a real calendar date in YYYY-MM-DD form (rejects 2026-02-31)? */
 export function isValidDate(s) {
@@ -100,8 +99,9 @@ export function validateNewRequest(input, now = Date.now()) {
   oneOf('request_type', REQUEST_TYPES, 'Request type');
   oneOf('priority', PRIORITIES, 'Priority');
 
-  const today = utcDay(now);
-  const maxDay = utcDay(now + LIMITS.neededByMaxDaysAhead * DAY_MS);
+  // Business calendar (Asia/Colombo), same as the server-side check in create_request().
+  const today = localDate(now);
+  const maxDay = localDate(now + LIMITS.neededByMaxDaysAhead * DAY_MS);
   if (!v.needed_by) errors.needed_by = 'Needed-by date is required.';
   else if (!isValidDate(v.needed_by)) errors.needed_by = 'Enter a valid date (YYYY-MM-DD).';
   else if (v.needed_by < today) errors.needed_by = 'Needed-by date cannot be in the past.';

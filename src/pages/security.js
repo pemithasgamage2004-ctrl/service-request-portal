@@ -18,7 +18,7 @@ const statusBadge = (s) =>
 const SUMMARY_LABELS = {
   files_linted: 'files linted', eslint_errors: 'ESLint errors', eslint_warnings: 'ESLint warnings', tests_passed: 'tests passed', tests_failed: 'tests failed',
   leaks_found: 'secrets found', files_scanned: 'files scanned', error: 'ERROR findings', warning: 'WARNING findings', info: 'INFO findings', scan_errors: 'scan errors',
-  dependencies: 'dependencies', critical: 'critical', high: 'high', moderate: 'moderate', low: 'low',
+  dependencies: 'dependencies', critical: 'critical', high: 'high', medium: 'medium', moderate: 'moderate', low: 'low', migrations: 'migrations applied',
 };
 
 export default function render(root) {
@@ -113,7 +113,7 @@ function pipelineDesign() {
   const step = (title, text, cls = '') => el('div', { class: `flow-step ${cls}` }, el('strong', { text: title }), el('span', { class: 'small', text }));
   return el('div', { class: 'card' },
     el('h2', { text: 'Pipeline design' }),
-    el('p', {}, 'Runs on every push and pull request to ', el('code', { text: 'main' }), '. The five check jobs run in parallel; ', el('code', { text: 'build' }), ' depends on all of them, and ', el('code', { text: 'deploy' }), ' only runs for pushes to main.'),
+    el('p', {}, 'Runs on every push and pull request to ', el('code', { text: 'main' }), '. The six check jobs run in parallel; ', el('code', { text: 'build' }), ' depends on all of them, and ', el('code', { text: 'deploy' }), ' only runs for pushes to main.'),
     el('div', { class: 'flow' },
       el('div', { class: 'flow-col' },
         step('lint', 'ESLint (incl. no-unsanitized XSS rules), unit tests, dataset reproducibility'),
@@ -121,6 +121,7 @@ function pipelineDesign() {
         step('sast', 'Semgrep: JavaScript, secrets and GitHub Actions packs + project rules'),
         step('codeql', 'GitHub CodeQL (security-extended) - fails on critical; results in code scanning'),
         step('deps', 'npm audit against the GitHub Advisory Database'),
+        step('db', 'Postgres 16: applies supabase/migrations + seed, tests RLS per role, append-only history, client/DB parity'),
       ),
       el('div', { class: 'flow-arrow', text: '→', attrs: { 'aria-hidden': 'true' } }),
       step('build', 'Merges check results into security-results.json, copies this workflow, Vite build', 'flow-main'),

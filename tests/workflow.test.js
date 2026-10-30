@@ -183,3 +183,10 @@ test('nextId continues the sequence', () => {
   expect(nextId([{ id: 'REQ-0009' }, { id: 'REQ-0042' }])).toBe('REQ-0043');
   expect(nextId([])).toBe('REQ-0001');
 });
+
+test('needed-by "today" follows the Asia/Colombo calendar (same rule as the server)', () => {
+  const lateUtc = Date.parse('2026-10-30T20:00:00Z'); // already 31 Oct 01:30 in Colombo
+  const base = { ...form, requester_name: 'Kiran Morrow', requester_id: 'EMP-2003', department: 'IT' };
+  expect(validateNewRequest({ ...base, needed_by: '2026-10-30' }, lateUtc).errors.needed_by).toMatch(/past/);
+  expect(validateNewRequest({ ...base, needed_by: '2026-10-31' }, lateUtc).ok).toBe(true);
+});

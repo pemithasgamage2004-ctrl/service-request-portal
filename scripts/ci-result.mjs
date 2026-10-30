@@ -3,7 +3,7 @@
 //   CHECK_STATUS=${{ job.status }} node scripts/ci-result.mjs <lint|secrets|sast|deps>
 // Reads the tool's report file (if present) and keeps only a SAFE summary:
 // counts, rule ids and file paths - never secret values (gitleaks runs with --redact).
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { readSarifDir } from './sarif.mjs';
 
 const id = process.argv[2];
@@ -84,6 +84,18 @@ const CHECKS = {
           low: v.low ?? null,
         },
         findings: Object.values(report?.vulnerabilities || {}).slice(0, 20).map((x) => ({ package: x.name, severity: x.severity, range: x.range })),
+      };
+    },
+  },
+  db: {
+    name: 'Database & RLS tests',
+    tool: 'PostgreSQL 16 + Vitest: migrations, seed, RLS policies, workflow functions, client/DB parity',
+    gate: 'Any failing database test fails the job (e.g. a persona seeing a row it should not, or history being editable).',
+    summarise() {
+      const r = readJson('db-test-results.json');
+      return {
+        summary: { tests_passed: r?.numPassedTests ?? null, tests_failed: r?.numFailedTests ?? null, migrations: readdirSync('supabase/migrations').filter((f) => f.endsWith('.sql')).length },
+        findings: (r?.testResults || []).flatMap((f) => f.assertionResults).filter((a) => a.status === 'failed').slice(0, 20).map((a) => ({ test: a.fullName })),
       };
     },
   },

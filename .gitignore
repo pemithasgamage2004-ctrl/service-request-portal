@@ -26,3 +26,4 @@ gitleaks.json
 semgrep.json
 audit.json
 public/security-results.json
+db-test-results.json
