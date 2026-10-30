@@ -7,18 +7,39 @@ const STATUS_BADGE = {
   Approved: 'badge-brand',
   Rejected: 'badge-err',
   Completed: 'badge-ok',
+  Withdrawn: '',
 };
 const PRIORITY_BADGE = { Low: '', Medium: 'badge-info', High: 'badge-warn', Critical: 'badge-err' };
 
 export const statusBadge = (s) => el('span', { class: `badge ${STATUS_BADGE[s] || ''}`, text: s });
 export const priorityBadge = (p) => el('span', { class: `badge ${PRIORITY_BADGE[p] || ''}`, text: p });
 
-/** '2026-10-30T09:15:00Z' -> '2026-10-30 09:15 UTC' */
+// Timestamps are stored in UTC and shown in the viewer's timezone (default Asia/Colombo
+// when the browser does not report one), always with the timezone label (A8).
+export const VIEWER_TZ = (() => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Colombo';
+  } catch {
+    return 'Asia/Colombo';
+  }
+})();
+const dtf = new Intl.DateTimeFormat('en-CA', {
+  timeZone: VIEWER_TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short',
+});
+const part = (parts, type) => parts.find((p) => p.type === type)?.value ?? '';
+
+/** '2026-10-30T04:30:00Z' -> '2026-10-30 10:00 GMT+5:30' (viewer's timezone). */
 export function fmtDateTime(iso) {
   if (!iso) return '-';
-  return `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
+  const p = dtf.formatToParts(new Date(iso));
+  return `${part(p, 'year')}-${part(p, 'month')}-${part(p, 'day')} ${part(p, 'hour')}:${part(p, 'minute')} ${part(p, 'timeZoneName')}`;
 }
-export const fmtDate = (iso) => (iso ? iso.slice(0, 10) : '-');
+/** Date only, in the viewer's timezone. */
+export function fmtDate(iso) {
+  if (!iso) return '-';
+  const p = dtf.formatToParts(new Date(iso));
+  return `${part(p, 'year')}-${part(p, 'month')}-${part(p, 'day')}`;
+}
 
 /** Announce a message in the shared aria-live toast region. */
 export function toast(message, kind = 'ok') {

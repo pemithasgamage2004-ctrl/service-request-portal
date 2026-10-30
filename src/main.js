@@ -1,7 +1,7 @@
 import './styles.css';
 import { el, clear } from './lib/dom.js';
-import { ROLES } from './lib/enums.js';
-import { getRole, setRole } from './lib/store.js';
+import { getPersona, setPersona } from './lib/store.js';
+import { PERSONAS } from './lib/people.js';
 import requirements from './pages/requirements.js';
 import dataset from './pages/dataset.js';
 import dashboard from './pages/dashboard.js';
@@ -29,15 +29,21 @@ function buildNav() {
   }
 }
 
-// Simulated role switcher (Staff / Manager / Leadership). Not authentication.
+// Demo-mode persona switcher (Staff / Manager / Fulfiller / Leadership / Admin).
+// Demo mode only: it is NOT authentication, which is why the demo banner is permanent.
 function buildRoleSwitcher() {
   const holder = document.getElementById('role-switcher');
-  const select = el('select', { attrs: { id: 'role-select' } }, ROLES.map((r) => el('option', { value: r, text: r })));
-  select.value = getRole();
-  select.addEventListener('change', () => setRole(select.value));
+  const select = el('select', { attrs: { id: 'role-select' } }, PERSONAS.map((p) => el('option', { value: p.key, text: p.label })));
+  select.value = getPersona().key;
+  select.addEventListener('change', () => setPersona(select.value));
   holder.append(el('label', { attrs: { for: 'role-select' }, class: 'role-label', text: 'Acting as' }), select);
-  // Re-render the current page so role-dependent actions update.
-  window.addEventListener('rolechange', () => render());
+  // Re-render the current page so persona-dependent data and actions update.
+  window.addEventListener('personachange', () => render());
+
+  const header = document.querySelector('.site-header');
+  header.after(el('div', { class: 'demo-banner', attrs: { role: 'note' } },
+    el('strong', { text: 'Demo mode – not secure. ' }),
+    'Data is stored only in this browser and the "Acting as" switcher is not a login. In production, sign-in and Postgres Row Level Security enforce these rules (see Security & Pipeline).'));
 }
 
 let cleanup = null;

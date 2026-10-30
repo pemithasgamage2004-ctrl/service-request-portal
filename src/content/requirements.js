@@ -1,9 +1,9 @@
 // Requirements content rendered on the Requirements page.
 // Values that also drive behaviour (SLA days, limits, enums) are imported, so the
 // documentation cannot drift from the implementation.
-import { SLA_DAYS, LIMITS, DEPARTMENTS, REQUEST_TYPES } from '../lib/enums.js';
+import { SLA_BUSINESS_DAYS, LIMITS, DEPARTMENTS, REQUEST_TYPES } from '../lib/enums.js';
 
-const sla = Object.entries(SLA_DAYS).map(([p, d]) => `${p} ${d} days`).join(', ');
+const sla = Object.entries(SLA_BUSINESS_DAYS).map(([p, d]) => `${p} ${d} business days`).join(', ');
 
 export const PROBLEM = [
   'A client organisation handles internal service requests (IT access, equipment, facilities) through email and spreadsheets. Requests get lost, nobody can see who is waiting on whom, approvals are not recorded consistently, and the operations lead cannot see the workload without manually compiling spreadsheets.',

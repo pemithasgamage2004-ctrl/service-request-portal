@@ -1,6 +1,6 @@
 import { test } from 'vitest';
 import assert from 'node:assert/strict';
-import { filterRequests, computeKpis, countByKey, weekStart, weeklyVolume } from '../src/lib/kpis.js';
+import { filterRequests, computeKpis, countByKey, weekStart, weeklyVolume, median } from '../src/lib/kpis.js';
 import { KPI_SQL } from '../src/lib/sql.js';
 
 const base = { department: 'IT', status: 'Submitted', due_at: '2026-10-10T00:00:00Z', approved_at: null, rejected_at: null, completed_at: null };
@@ -19,6 +19,25 @@ test('KPIs: open, overdue, avg days to approval, approval rate', () => {
   assert.equal(k.overdue, 1); // A only: C is rejected (terminal), B not yet due
   assert.equal(k.avgDaysToApproval, 3); // (2 + 4) / 2
   assert.equal(k.approvalRate, 66.7); // 2 approved / 3 decided
+  assert.equal(k.medianDaysToApproval, 3); // median of [2, 4]
+});
+
+test('median is outlier-resistant; Withdrawn is excluded from approval rate and open', () => {
+  assert.equal(median([1, 2, 100]), 2);
+  assert.equal(median([1, 2, 3, 100]), 2.5);
+  const withdrawn = { ...base, id: 'W', created_at: '2026-10-02T09:00:00Z', status: 'Withdrawn', withdrawn_at: '2026-10-02T10:00:00Z' };
+  const k = computeKpis([...rows, withdrawn], NOW);
+  assert.equal(k.approvalRate, 66.7);
+  assert.equal(k.open, 2);
+  assert.equal(k.withdrawn, 1);
+  assert.equal(k.total, 5);
+});
+
+test('date filter uses the Asia/Colombo calendar day', () => {
+  // 20:00Z on 4 Oct is 01:30 on 5 Oct in Colombo
+  const late = [{ ...base, id: 'L', created_at: '2026-10-04T20:00:00Z' }];
+  assert.equal(filterRequests(late, { from: '2026-10-05', to: '2026-10-05' }).length, 1);
+  assert.equal(filterRequests(late, { from: '2026-10-04', to: '2026-10-04' }).length, 0);
 });
 
 test('KPIs with no data are null, not NaN', () => {
@@ -52,6 +71,6 @@ test('weekly buckets start on Monday and are zero-filled', () => {
 test('SQL uses bind parameters for filters', () => {
   const sql = KPI_SQL.open({ from: '2026-10-01', department: 'IT' });
   assert.match(sql, /department = :department/);
-  assert.match(sql, /created_at >= :from_date/);
+  assert.match(sql, /::date >= :from_date/);
   assert.match(sql, /status IN \('Submitted', 'Under Review', 'Approved'\)/);
 });

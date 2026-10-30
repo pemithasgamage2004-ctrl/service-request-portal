@@ -1,10 +1,10 @@
 import { el, pageHeader } from '../lib/dom.js';
-import { DEPARTMENTS, REQUEST_TYPES, PRIORITIES, STATUSES, LIMITS, SLA_DAYS, DAY_MS } from '../lib/enums.js';
+import { DEPARTMENTS, REQUEST_TYPES, PRIORITIES, STATUSES, LIMITS, SLA_BUSINESS_DAYS, DAY_MS, FULFILMENT_TEAMS } from '../lib/enums.js';
 import {
-  createRequest, applyTransition, transitionError, nextStatuses, isOverdue, CAN_SUBMIT, ACTION_LABELS,
+  createRequest, applyTransition, transitionError, nextStatuses, isOverdue, canView, CAN_SUBMIT, ACTION_LABELS,
 } from '../lib/workflow.js';
 import {
-  getRequests, addRequest, updateRequest, resetToSample, subscribe, getRole, getSource, getDroppedOnLoad, DEMO_ACTORS,
+  getRequests, addRequest, updateRequest, resetToSample, subscribe, getPersona, getSource, getDroppedOnLoad,
 } from '../lib/store.js';
 import { statusBadge, priorityBadge, fmtDateTime, fmtDate, toast, downloadText } from '../lib/ui.js';
 import { toCsv, REQUEST_COLUMNS } from '../lib/csv.js';
@@ -14,9 +14,9 @@ let state;
 
 export default function render(root) {
   state = { selectedId: null, search: '', status: '', department: '', showForm: false };
-  const role = getRole();
+  const actor = getPersona();
 
-  root.append(pageHeader('Workflow', 'Submit service requests and move them through Submitted → Under Review → Approved / Rejected → Completed. Every change is recorded in the status history.'));
+  root.append(pageHeader('Workflow', 'Submit service requests and move them through Submitted → Under Review → Approved / Rejected → Completed (or Withdrawn by the requester while still Submitted). Every change is recorded in the status history.'));
 
   const banner = el('div', { class: 'alert alert-info' });
   const formHolder = el('div');
@@ -24,13 +24,13 @@ export default function render(root) {
   const detailHolder = el('div', { class: 'card wf-detail' });
 
   const newBtn = el('button', { class: 'btn', type: 'button', text: '+ New request' });
-  if (!CAN_SUBMIT.includes(role)) {
+  if (!CAN_SUBMIT.includes(actor.role)) {
     newBtn.disabled = true;
-    newBtn.title = 'Leadership has read-only access. Switch to Staff or Manager to submit.';
+    newBtn.title = 'Leadership has read-only access. Switch to a Staff or Manager persona to submit.';
   }
   newBtn.addEventListener('click', () => {
     state.showForm = !state.showForm;
-    renderForm(formHolder, role);
+    renderForm(formHolder, actor);
   });
 
   const resetBtn = el('button', { class: 'btn btn-secondary', type: 'button', text: 'Reset to sample data' });
@@ -62,9 +62,11 @@ export default function render(root) {
       jsonBtn.addEventListener('click', async () => downloadText('requests-current.json', JSON.stringify(await getRequests(), null, 2), 'application/json'));
 
       const refresh = (list) => {
-        renderBanner(banner, role);
-        renderList(listHolder, list, () => refresh(list));
-        renderDetail(detailHolder, list.find((r) => r.id === state.selectedId), role);
+        // Only show what this persona may see (mirrors the RLS SELECT policies).
+        const visible = list.filter((r) => canView(r, actor));
+        renderBanner(banner, actor, visible.length, list.length);
+        renderList(listHolder, visible, () => refresh(list));
+        renderDetail(detailHolder, visible.find((r) => r.id === state.selectedId), actor);
       };
       refresh(requests);
       unsubscribe = subscribe(refresh);
@@ -77,16 +79,18 @@ export default function render(root) {
   };
 }
 
-function renderBanner(banner, role) {
+function renderBanner(banner, actor, visibleCount, totalCount) {
   const can = {
-    Staff: 'You can submit requests and view their progress. Approvals are done by a Manager.',
-    Manager: 'You can submit requests, start reviews, approve / reject (reason required) and mark approved requests completed.',
-    Leadership: 'Read-only: you can view requests and history. Use the Dashboard for workload figures.',
-  }[role];
+    Staff: 'You can submit requests, see your own requests and withdraw them while they are still Submitted.',
+    Manager: `You can review, approve and reject (reason required) requests from the ${actor.department} department. You cannot decide your own requests or complete requests.`,
+    Fulfiller: `You see approved ${actor.team} requests and mark them Completed once fulfilled.`,
+    Leadership: 'Read-only: you can view all requests and their history. Use the Dashboard for workload figures.',
+    Admin: "You can see everything and you review/decide requests raised by a department's own manager.",
+  }[actor.role];
   const dropped = getDroppedOnLoad();
   banner.replaceChildren(
-    el('strong', { text: `Acting as ${role}. ` }), can, ' ',
-    el('span', { class: 'muted', text: 'Change role in the header. Roles are simulated for this demo and are not a security control.' }),
+    el('strong', { text: `Acting as ${actor.name} (${actor.label}). ` }), can, ' ',
+    el('span', { class: 'muted', text: `Showing ${visibleCount} of ${totalCount} requests visible to this persona. Change persona in the header.` }),
     el('br'),
     el('span', {
       class: 'small',
@@ -99,7 +103,7 @@ function renderBanner(banner, role) {
 }
 
 // ---------------------------------------------------------------- New request form
-function renderForm(holder, role) {
+function renderForm(holder, actor) {
   if (!state.showForm) {
     holder.replaceChildren();
     return;
@@ -130,12 +134,13 @@ function renderForm(holder, role) {
 
   const form = el('form', { class: 'card', attrs: { novalidate: true, 'aria-label': 'New service request' } },
     el('h2', { text: 'New service request' }),
+    // Requester identity and department come from the signed-in profile (here: the demo persona), never from form input.
+    el('p', { class: 'small muted submit-as' },
+      'Submitting as ', el('strong', { text: `${actor.name} (${actor.id})` }), `, ${actor.department} department. `,
+      `It will be routed to the ${actor.department} Manager${actor.role === 'Manager' ? ' (as you are the manager, an Admin decides it)' : ''}.`),
     el('div', { class: 'form-grid' },
-      field('requester_name', 'Your name', el('input', { type: 'text', attrs: { maxlength: LIMITS.requester_name.max, autocomplete: 'name' } }), '(fictional)'),
-      field('requester_id', 'Employee ID', el('input', { type: 'text', attrs: { maxlength: 8, placeholder: 'EMP-1234' } }), '(EMP-####)'),
-      field('department', 'Department', select(DEPARTMENTS, 'Select department…')),
       field('request_type', 'Request type', select(REQUEST_TYPES, 'Select type…')),
-      field('priority', 'Priority', priority, `(SLA: ${Object.entries(SLA_DAYS).map(([p, d]) => `${p} ${d}d`).join(', ')})`),
+      field('priority', 'Priority', priority, `(SLA in business days: ${Object.entries(SLA_BUSINESS_DAYS).map(([p, d]) => `${p} ${d}`).join(', ')})`),
       field('needed_by', 'Needed by', el('input', { type: 'date', attrs: { min: today, max: maxDay } })),
     ),
     field('title', 'Title', title, `(${LIMITS.title.min}–${LIMITS.title.max} chars)`),
@@ -144,7 +149,7 @@ function renderForm(holder, role) {
     counter(desc, LIMITS.description.max),
     el('div', { class: 'btn-row' },
       el('button', { class: 'btn', type: 'submit', text: 'Submit request' }),
-      el('button', { class: 'btn btn-secondary', type: 'button', text: 'Cancel', on: { click: () => { state.showForm = false; renderForm(holder, role); } } }),
+      el('button', { class: 'btn btn-secondary', type: 'button', text: 'Cancel', on: { click: () => { state.showForm = false; renderForm(holder, actor); } } }),
     ),
   );
 
@@ -152,7 +157,7 @@ function renderForm(holder, role) {
     e.preventDefault();
     const input = Object.fromEntries(new FormData(form).entries());
     const existing = await getRequests();
-    const res = createRequest(input, { role: getRole(), existing });
+    const res = createRequest(input, { actor, existing });
     for (const { err, control } of Object.values(errs)) {
       err.textContent = '';
       control.removeAttribute('aria-invalid');
@@ -161,7 +166,10 @@ function renderForm(holder, role) {
       if (res.errors._form) toast(res.errors._form, 'error');
       let first = null;
       for (const [name, msg] of Object.entries(res.errors)) {
-        if (!errs[name]) continue;
+        if (!errs[name]) {
+          if (name !== '_form') toast(msg, 'error'); // profile-derived field (name / ID / department)
+          continue;
+        }
         errs[name].err.textContent = msg;
         errs[name].control.setAttribute('aria-invalid', 'true');
         first = first || errs[name].control;
@@ -171,7 +179,7 @@ function renderForm(holder, role) {
     }
     state.selectedId = res.request.id;
     state.showForm = false;
-    renderForm(holder, role);
+    renderForm(holder, actor);
     const saved = addRequest(res.request);
     toast(saved ? `${res.request.id} submitted.` : `${res.request.id} created, but could not be saved to browser storage.`, saved ? 'ok' : 'error');
   });
@@ -250,7 +258,7 @@ function renderList(holder, requests, rerender) {
 }
 
 // ---------------------------------------------------------------- Detail + actions + history
-function renderDetail(holder, r, role) {
+function renderDetail(holder, r, actor) {
   if (!r) {
     holder.replaceChildren(el('h2', { text: 'Request details' }), el('p', { class: 'muted', text: 'Select a request from the list to see its details, status history and available actions.' }));
     return;
@@ -261,7 +269,9 @@ function renderDetail(holder, r, role) {
   kv('Priority', priorityBadge(r.priority));
   kv('Department', r.department);
   kv('Type', r.request_type);
-  kv('Requester', `${r.requester_name} (${r.requester_id})`);
+  kv('Requester', `${r.requester_name} (${r.requester_id}${r.requester_role === 'Manager' ? ', department manager' : ''})`);
+  kv('Approver', r.requester_role === 'Manager' ? 'Admin (raised by the department manager)' : `${r.department} Manager`);
+  kv('Fulfilment team', FULFILMENT_TEAMS[r.request_type]);
   kv('Submitted', fmtDateTime(r.created_at));
   kv('Needed by', r.needed_by);
   kv('SLA due', el('span', {}, fmtDateTime(r.due_at), isOverdue(r) ? el('span', { class: 'badge badge-err overdue', text: 'Overdue' }) : null));
@@ -270,17 +280,17 @@ function renderDetail(holder, r, role) {
     el('div', { class: 'detail-head' }, el('code', { text: r.id }), el('h2', { text: r.title })),
     el('p', { class: 'desc', text: r.description }),
     dl,
-    renderActions(r, role),
+    renderActions(r, actor),
     el('h3', { text: 'Status history' }),
     el('div', { class: 'table-wrap' },
       el('table', {},
-        el('thead', {}, el('tr', {}, ['#', 'Status', 'When', 'Actor', 'Role', 'Comment'].map((h) => el('th', { text: h })))),
+        el('thead', {}, el('tr', {}, ['#', 'From → To', 'When', 'Actor', 'Role', 'Comment'].map((h) => el('th', { text: h })))),
         el('tbody', {}, r.history.map((h, i) =>
           el('tr', {},
             el('td', { text: String(i + 1) }),
-            el('td', {}, statusBadge(h.status)),
+            el('td', { class: 'nowrap' }, h.from ? [statusBadge(h.from), ' → '] : null, statusBadge(h.status)),
             el('td', { class: 'nowrap', text: fmtDateTime(h.at) }),
-            el('td', { text: h.actor }),
+            el('td', {}, h.actor, el('div', { class: 'small muted', text: h.actor_id })),
             el('td', { text: h.role }),
             el('td', { text: h.comment || '-' }),
           ),
@@ -290,7 +300,7 @@ function renderDetail(holder, r, role) {
   );
 }
 
-function renderActions(r, role) {
+function renderActions(r, actor) {
   const targets = nextStatuses(r);
   const box = el('div', { class: 'actions' }, el('h3', { text: 'Actions' }));
   if (targets.length === 0) {
@@ -298,18 +308,19 @@ function renderActions(r, role) {
     return box;
   }
   const comment = el('textarea', {
-    attrs: { id: 'action-comment', maxlength: LIMITS.comment.max, placeholder: 'Comment (required when rejecting)', rows: 2 },
+    attrs: { id: 'action-comment', maxlength: LIMITS.comment.max, placeholder: `Comment (a reason of at least ${LIMITS.rejectReason.min} characters is required when rejecting)`, rows: 2 },
   });
   const msg = el('div', { class: 'field-error', attrs: { 'aria-live': 'polite' } });
-  const anyAllowed = targets.some((to) => !transitionError(r, to, role));
+  const reasons = Object.fromEntries(targets.map((to) => [to, transitionError(r, to, actor)]));
+  const anyAllowed = targets.some((to) => !reasons[to]);
   const buttons = targets.map((to) => {
-    const reason = transitionError(r, to, role);
-    const cls = to === 'Rejected' ? 'btn-danger' : to === 'Approved' || to === 'Completed' ? 'btn-ok' : '';
+    const reason = reasons[to];
+    const cls = to === 'Rejected' ? 'btn-danger' : to === 'Approved' || to === 'Completed' ? 'btn-ok' : to === 'Withdrawn' ? 'btn-secondary' : '';
     const b = el('button', { class: `btn ${cls}`, type: 'button', text: ACTION_LABELS[to] || to, disabled: Boolean(reason) });
     if (reason) b.title = reason;
     b.addEventListener('click', () => {
       // Re-check in the logic layer even though the button was enabled.
-      const res = applyTransition(r, to, { role: getRole(), actor: DEMO_ACTORS[getRole()], comment: comment.value });
+      const res = applyTransition(r, to, { actor, comment: comment.value });
       if (!res.ok) {
         msg.textContent = res.error;
         comment.setAttribute('aria-invalid', 'true');
@@ -321,11 +332,10 @@ function renderActions(r, role) {
     });
     return b;
   });
-  if (anyAllowed) {
-    box.append(el('label', { attrs: { for: 'action-comment' }, text: 'Comment' }), comment, msg);
-  } else {
-    box.append(el('p', { class: 'muted small', text: `Your role (${role}) cannot change this request. Only a Manager can review, approve, reject or complete. Switch role in the header to act on it.` }));
-  }
+  if (anyAllowed) box.append(el('label', { attrs: { for: 'action-comment' }, text: 'Comment' }), comment, msg);
+  // Explain exactly why each unavailable action is blocked (department, separation of duties, team, requester-only).
+  const blocked = targets.filter((to) => reasons[to]);
+  if (blocked.length) box.append(el('ul', { class: 'muted small why-not' }, blocked.map((to) => el('li', { text: `${ACTION_LABELS[to]}: ${reasons[to]}` }))));
   box.append(el('div', { class: 'btn-row' }, buttons));
   return box;
 }

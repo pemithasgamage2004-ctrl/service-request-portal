@@ -1,5 +1,5 @@
 import { el, pageHeader } from '../lib/dom.js';
-import { TRANSITIONS } from '../lib/workflow.js';
+import { TRANSITIONS, RULE_LABELS } from '../lib/workflow.js';
 import { PROBLEM, ROLES_TABLE, USER_STORIES, BRIEFING, ASSUMPTIONS, NON_FUNCTIONAL } from '../content/requirements.js';
 import { statusBadge } from '../lib/ui.js';
 
@@ -37,10 +37,10 @@ export default function render(root) {
         ),
       ),
       el('p', { class: 'small muted', text: 'Allowed transitions (generated from the rules the app enforces in src/lib/workflow.js):' }),
-      table(['From', 'To', 'Allowed role'],
+      table(['From', 'To', 'Who may do it'],
         Object.entries(TRANSITIONS).flatMap(([from, tos]) =>
           Object.keys(tos).length
-            ? Object.entries(tos).map(([to, roles]) => [statusBadge(from), statusBadge(to), roles.join(', ')])
+            ? Object.entries(tos).map(([to, rule]) => [statusBadge(from), statusBadge(to), RULE_LABELS[rule]])
             : [[statusBadge(from), el('span', { class: 'muted', text: '(none - final status)' }), '-']],
         ),
       ),

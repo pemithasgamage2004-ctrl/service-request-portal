@@ -134,4 +134,16 @@ export const AI_ISSUES = [
     after: 'npm i -D vitest@5.0.5   ->  found 0 vulnerabilities',
     fix: 'Checked the current release and its peer requirements (vite ^6.4 || ^7 || ^8, Node >=22.12), installed vitest 5.0.5, raised engines.node to >=22.12, re-ran audit (0 vulnerabilities) and all 25 tests. Lesson: always check current versions instead of relying on remembered ones.',
   },
+  {
+    id: 11,
+    date: '2026-10-30',
+    milestone: 'H1 (hardening)',
+    category: 'Logic / Regression',
+    foundBy: 'End-to-end headless-browser run of all pages after the workflow-rules refactor',
+    issue:
+      'The AI changed the transition matrix from "target -> list of allowed roles" to "target -> rule name" (approver / fulfiller / requester) to support department scoping and separation of duties, updated the Workflow page and all unit tests, but missed that the Requirements page still rendered the matrix with roles.join(). Every unit test passed while the Requirements page crashed with "TypeError: n.join is not a function".',
+    before: "Object.entries(tos).map(([to, roles]) => [statusBadge(from), statusBadge(to), roles.join(', ')])",
+    after: 'Object.entries(tos).map(([to, rule]) => [statusBadge(from), statusBadge(to), RULE_LABELS[rule]])',
+    fix: 'Render the human-readable RULE_LABELS exported next to TRANSITIONS, so the page cannot drift from the rules again. The page-level smoke test (every page, zero console errors) is now part of the routine before each commit; unit tests alone did not cover page rendering.',
+  },
 ];

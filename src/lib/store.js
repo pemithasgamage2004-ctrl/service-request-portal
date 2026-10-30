@@ -3,11 +3,13 @@
 // - Once the user changes anything, the full list is saved to localStorage.
 // - Data read back from localStorage is treated as untrusted and re-validated.
 import { loadSample } from './data.js';
-import { ROLES } from './enums.js';
 import { storedRequestError } from './workflow.js';
+import { PERSONAS } from './people.js';
 
-const DATA_KEY = 'srp.requests.v1';
-const ROLE_KEY = 'srp.role.v1';
+// v2: data model with requester_role / withdrawn_at / history.from+actor_id. Older v1
+// data is simply ignored (Demo mode only), so a schema change never breaks the page.
+const DATA_KEY = 'srp.requests.v2';
+const PERSONA_KEY = 'srp.persona.v1';
 
 let requests = null; // array once loaded
 let source = 'sample'; // 'sample' | 'local'
@@ -107,16 +109,16 @@ function emit() {
   for (const fn of listeners) fn(requests);
 }
 
-// ---- Simulated role (NOT a security control: no authentication in a static demo) ----
-export function getRole() {
-  const r = safeGet(ROLE_KEY);
-  return ROLES.includes(r) ? r : 'Staff';
-}
-export function setRole(role) {
-  if (!ROLES.includes(role)) return;
-  safeSet(ROLE_KEY, role);
-  window.dispatchEvent(new CustomEvent('rolechange', { detail: role }));
-}
+// ---- Demo-mode persona (NOT a security control: Demo mode has no authentication) ----
+export const DEFAULT_PERSONA = 'leadership';
 
-/** Demo identity used as the "actor" in status history for each role. */
-export const DEMO_ACTORS = { Staff: 'Demo Staff User', Manager: 'Demo Manager', Leadership: 'Demo Leadership' };
+/** Current demo persona: { key, label, id, name, role, department?, team? }. */
+export function getPersona() {
+  const key = safeGet(PERSONA_KEY);
+  return PERSONAS.find((p) => p.key === key) || PERSONAS.find((p) => p.key === DEFAULT_PERSONA);
+}
+export function setPersona(key) {
+  if (!PERSONAS.some((p) => p.key === key)) return;
+  safeSet(PERSONA_KEY, key);
+  window.dispatchEvent(new CustomEvent('personachange', { detail: key }));
+}

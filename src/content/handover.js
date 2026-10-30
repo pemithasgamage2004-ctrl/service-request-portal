@@ -55,7 +55,7 @@ export const RUN_LOCALLY = [
 
 export const CHANGE_GUIDE = [
   { want: 'Add a department, request type or priority', where: 'src/lib/enums.js', then: 'Validation, filters, charts, field dictionary and SQL CHECKs update automatically. Regenerate the sample data.' },
-  { want: 'Change SLA days or field limits', where: 'src/lib/enums.js (SLA_DAYS, LIMITS)', then: 'Assumptions text and validation update automatically. Regenerate data if due dates should change.' },
+  { want: 'Change SLA days or field limits', where: 'src/lib/enums.js (SLA_BUSINESS_DAYS, LIMITS) and src/lib/holidays.js', then: 'Assumptions text and validation update automatically. Regenerate data if due dates should change.' },
   { want: 'Change who can do which transition', where: 'src/lib/workflow.js (TRANSITIONS)', then: 'Update tests/workflow.test.js; the Requirements transition table updates automatically.' },
   { want: 'Regenerate / resize the sample data', where: 'scripts/generate-data.mjs (CONFIG)', then: 'Run node scripts/generate-data.mjs and commit public/data/* (CI fails if the files do not match the generator).' },
   { want: 'Change a KPI definition', where: 'src/lib/kpis.js + src/lib/sql.js', then: 'Update tests/kpis.test.js and the matching assumption in src/content/requirements.js.' },

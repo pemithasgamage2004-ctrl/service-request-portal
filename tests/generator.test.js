@@ -1,4 +1,4 @@
-import { test } from 'vitest';
+import { test, expect } from 'vitest';
 import assert from 'node:assert/strict';
 import { generate, CONFIG } from '../scripts/generate-data.mjs';
 import { DEPARTMENTS, REQUEST_TYPES, PRIORITIES, STATUSES } from '../src/lib/enums.js';
@@ -32,5 +32,23 @@ test('history is consistent with status and timestamps', () => {
     assert.equal(r.approved_at !== null, r.history.some((h) => h.status === 'Approved'), r.id);
     assert.equal(r.rejected_at !== null, r.status === 'Rejected', r.id);
     assert.ok(!(r.approved_at && r.rejected_at), r.id);
+  }
+});
+
+test('every sample history obeys the workflow rules (replayed through applyTransition)', async () => {
+  const { transitionError } = await import('../src/lib/workflow.js');
+  const { MANAGERS, FULFILLERS, ADMIN } = await import('../src/lib/people.js');
+  const actorFor = (h) => {
+    const dept = Object.entries(MANAGERS).find(([, m]) => m.id === h.actor_id)?.[0];
+    const team = Object.entries(FULFILLERS).find(([, f]) => f.id === h.actor_id)?.[0];
+    return { id: h.actor_id, name: h.actor, role: h.role, department: dept ?? (h.actor_id === ADMIN.id ? ADMIN.department : undefined), team };
+  };
+  for (const r of requests) {
+    let state = { ...r, status: 'Submitted' };
+    for (const h of r.history.slice(1)) {
+      expect(h.from, `${r.id} from`).toBe(state.status);
+      expect(transitionError(state, h.status, actorFor(h)), `${r.id} ${h.from}->${h.status} by ${h.actor}`).toBeNull();
+      state = { ...state, status: h.status };
+    }
   }
 });
