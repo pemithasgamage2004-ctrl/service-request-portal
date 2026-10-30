@@ -4,6 +4,9 @@ import { fmtDateTime } from '../lib/ui.js';
 const REPO_URL = 'https://github.com/pemithasgamage2004-ctrl/service-request-portal';
 const RESULTS_URL = './security-results.json';
 const PIPELINE_URL = './pipeline/ci-cd.yml.txt';
+// Deliberate failing run: PR #4 added an obviously fake token; the PR was closed unmerged.
+const GATE_PROOF_RUN = 'https://github.com/pemithasgamage2004-ctrl/service-request-portal/actions/runs/41008488731';
+const GATE_PROOF_PR = 'https://github.com/pemithasgamage2004-ctrl/service-request-portal/pull/4';
 
 // Only link to GitHub URLs, even though the JSON is our own build output (defence in depth).
 const safeGithubUrl = (u) => (typeof u === 'string' && /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+(\/[\w./-]*)?$/.test(u) ? u : null);
@@ -98,6 +101,10 @@ function renderResults(card, s) {
     'This summary is generated during the pipeline run (scripts/ci-result.mjs + scripts/build-security-summary.mjs) and deployed with the site, so it updates automatically on every deployment. ',
     'Because any failing gate stops the build, a failed run is never deployed: this page shows the latest run that passed and was deployed. Failed runs are visible in the ',
     ext(`${REPO_URL}/actions`, 'Actions history'), '.'));
+  items.push(el('div', { class: 'alert alert-info gate-proof' },
+    el('strong', { text: 'Proof the gate blocks deployment: ' }),
+    ext(GATE_PROOF_RUN, 'this red run'), ' (from ', ext(GATE_PROOF_PR, 'PR #4'),
+    ', closed unmerged) added an obviously fake token. Gitleaks failed, so Build and Deploy were skipped and nothing was published.'));
   card.replaceChildren(...items);
 }
 

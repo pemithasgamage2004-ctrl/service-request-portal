@@ -98,4 +98,16 @@ export const AI_ISSUES = [
     after: '[hidden] { display: none !important; }\n.chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }',
     fix: 'Added a global [hidden] rule so the attribute always wins, and fixed the chart grid to two columns (one below 860px). Re-verified with screenshots at 1280px and 375px.',
   },
+  {
+    id: 8,
+    date: '2026-10-30',
+    milestone: 'M5',
+    category: 'Security pipeline / Logic',
+    foundBy: 'Human-requested gate test (PR #4 with a fake token), followed up by AI analysis',
+    issue:
+      'The AI-written Gitleaks step used `gitleaks git .` with a full-history checkout (fetch-depth: 0). Gitleaks then scans every fetched ref (`git log --all`), not just the history being deployed. When the throwaway test branch could not be deleted from the session, this meant a secret on ANY branch (even an unmerged, closed PR branch) would fail the main pipeline and block every production deploy. Reproduced locally: a leak only on a side branch was reported when scanning main.',
+    before: 'run: ./gitleaks git . --redact --no-banner --report-format json --report-path gitleaks.json --exit-code 1',
+    after: 'run: ./gitleaks git . --log-opts=HEAD --redact --no-banner --report-format json --report-path gitleaks.json --exit-code 1',
+    fix: 'The scan now covers the full history of the commit being built (HEAD; for PRs the merge commit, so PR commits are still caught). Secrets on other branches are caught by their own PR runs. The gate itself was proven with PR #4 (run 41008488731: Gitleaks failed, Build and Deploy skipped); the next main run passed while that branch still existed.',
+  },
 ];

@@ -85,8 +85,11 @@ jobs:
           echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum --check --strict
           tar -xzf gitleaks.tar.gz gitleaks
           ./gitleaks version
+      # --log-opts=HEAD: scan the full history of the commit being built (for a PR this is
+      # the merge commit, so the PR's commits are included). Without it gitleaks scans every
+      # fetched ref (`git log --all`), so a secret on an unrelated branch would block main.
       - name: Scan git history for secrets (fails on any finding)
-        run: ./gitleaks git . --redact --no-banner --report-format json --report-path gitleaks.json --exit-code 1
+        run: ./gitleaks git . --log-opts=HEAD --redact --no-banner --report-format json --report-path gitleaks.json --exit-code 1
       - name: Record result
         if: always()
         env:
