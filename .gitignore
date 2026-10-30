@@ -1,0 +1,19 @@
+# Dependencies & build output
+node_modules/
+dist/
+
+# Generated at build time (copied from .github/workflows)
+public/pipeline/
+
+# Local env / secrets (none are needed, but never commit them)
+.env
+.env.*
+*.pem
+*.key
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

@@ -1,0 +1,38 @@
+{
+  "name": "service-request-portal",
+  "version": "1.0.0",
+  "description": "EGUARDIAN Service Request Portal - static site (Vite + vanilla JS)",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/copy-pipeline.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "node --test tests/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pemithasgamage2004-ctrl/service-request-portal.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/pemithasgamage2004-ctrl/service-request-portal/issues"
+  },
+  "homepage": "https://github.com/pemithasgamage2004-ctrl/service-request-portal#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-no-unsanitized": "^4.1.5",
+    "globals": "^17.13.0",
+    "vite": "^6.4.5"
+  },
+  "dependencies": {
+    "chart.js": "^4.6.1"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}

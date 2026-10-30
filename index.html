@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      GitHub Pages cannot send custom HTTP headers, so the CSP is delivered via <meta>.
+      Limitations of the meta form: frame-ancestors, report-uri and sandbox are ignored.
+      No inline scripts/styles and no third-party origins are used, so the policy stays strict.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="description" content="EGUARDIAN Service Request Portal - submit, approve and track internal service requests." />
+    <title>EGUARDIAN Service Request Portal</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#/requirements">
+          <span class="brand-mark" aria-hidden="true">EG</span>
+          <span class="brand-text">EGUARDIAN <span class="brand-sub">Service Request Portal</span></span>
+        </a>
+        <div class="role-switcher" id="role-switcher"></div>
+      </div>
+      <nav class="site-nav" aria-label="Main">
+        <ul id="nav-list"></ul>
+      </nav>
+    </header>
+    <main id="main" class="container" tabindex="-1"></main>
+    <footer class="site-footer">
+      <div class="container">
+        Demo portal with fictional data only. Built with Vite + vanilla JS, deployed to GitHub Pages via GitHub Actions.
+      </div>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
