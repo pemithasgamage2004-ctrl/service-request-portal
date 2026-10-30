@@ -160,3 +160,11 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
   .brand-sub { display: none; }
   .card { padding: 14px; }
 }
+
+/* Stat tiles */
+.stat { margin-bottom: 0; }
+.stat-label { color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-value { font-size: 1.15rem; font-weight: 700; margin-top: 2px; word-break: break-word; }
+.preview-toggle { margin-top: 10px; }
+.grid + .card, .grid + h2 { margin-top: 16px; }
+.card table td, .card table th { padding: 5px 8px; }

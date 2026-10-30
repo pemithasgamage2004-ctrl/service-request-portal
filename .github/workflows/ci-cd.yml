@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   lint:
-    name: Lint (ESLint + no-unsanitized)
+    name: Lint, tests & data reproducibility
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -34,6 +34,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm test
+      - name: Verify sample data is reproducible from the seed
+        run: |
+          node scripts/generate-data.mjs
+          git diff --exit-code -- public/data
 
   build:
     name: Build site

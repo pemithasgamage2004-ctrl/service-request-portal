@@ -1,0 +1,2582 @@
+{
+  "meta": {
+    "generator": "scripts/generate-data.mjs",
+    "seed": 20261030,
+    "count": 60,
+    "created_range": [
+      "2026-07-01",
+      "2026-10-28"
+    ],
+    "as_of": "2026-10-29T18:00:00Z",
+    "config": {
+      "SEED": 20261030,
+      "COUNT": 60,
+      "START": "2026-07-01",
+      "END": "2026-10-28",
+      "AS_OF": "2026-10-29T18:00:00Z",
+      "APPROVAL_PROBABILITY": 0.8,
+      "STALL_PROBABILITY": 0.15,
+      "STALL_FACTOR": 6,
+      "REQUESTERS_PER_DEPT": 4,
+      "BACKLOG_WINDOW_DAYS": 45,
+      "BACKLOG_PROBABILITY": 0.55,
+      "weights": {
+        "department": {
+          "Finance": 14,
+          "HR": 12,
+          "IT": 20,
+          "Operations": 18,
+          "Sales": 14,
+          "Marketing": 12,
+          "Legal": 10
+        },
+        "request_type": {
+          "IT Access": 32,
+          "Equipment": 28,
+          "Facilities": 20,
+          "Software Licence": 14,
+          "Other": 6
+        },
+        "priority": {
+          "Low": 30,
+          "Medium": 40,
+          "High": 22,
+          "Critical": 8
+        }
+      }
+    },
+    "note": "Fictional data. Names and employee IDs are randomly combined and do not refer to real people."
+  },
+  "requests": [
+    {
+      "id": "REQ-0001",
+      "title": "Replacement laptop",
+      "description": "Current laptop battery lasts under an hour and the hinge is cracked. Requesting a replacement.",
+      "requester_name": "Rowan Vale",
+      "requester_id": "EMP-1110",
+      "department": "IT",
+      "request_type": "Equipment",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-07-01T15:27:00Z",
+      "needed_by": "2026-07-25",
+      "due_at": "2026-07-16T15:27:00Z",
+      "approved_at": "2026-07-05T04:17:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-07-10T06:41:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-01T15:27:00Z",
+          "actor": "Rowan Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-02T03:51:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-07-05T04:17:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-07-10T06:41:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-07-10T06:41:00Z"
+    },
+    {
+      "id": "REQ-0002",
+      "title": "Parking permit",
+      "description": "Request a staff parking permit for the basement car park.",
+      "requester_name": "Yuki Senarath",
+      "requester_id": "EMP-1131",
+      "department": "Operations",
+      "request_type": "Other",
+      "priority": "High",
+      "status": "Completed",
+      "created_at": "2026-07-08T12:11:00Z",
+      "needed_by": "2026-07-17",
+      "due_at": "2026-07-13T12:11:00Z",
+      "approved_at": "2026-07-10T16:22:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-07-12T14:23:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-08T12:11:00Z",
+          "actor": "Yuki Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-09T02:35:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-07-10T16:22:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-07-12T14:23:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Operations Support."
+        }
+      ],
+      "updated_at": "2026-07-12T14:23:00Z"
+    },
+    {
+      "id": "REQ-0003",
+      "title": "Meeting room AV not working",
+      "description": "The projector in meeting room 3B does not detect HDMI input.",
+      "requester_name": "Elena Quill",
+      "requester_id": "EMP-1159",
+      "department": "Sales",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-07-08T16:08:00Z",
+      "needed_by": "2026-08-04",
+      "due_at": "2026-07-23T16:08:00Z",
+      "approved_at": "2026-07-14T17:35:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-07-22T02:44:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-08T16:08:00Z",
+          "actor": "Elena Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-10T23:35:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-07-14T17:35:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-07-22T02:44:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-07-22T02:44:00Z"
+    },
+    {
+      "id": "REQ-0004",
+      "title": "VPN access for remote work",
+      "description": "Need VPN access to work from home two days a week per the hybrid policy.",
+      "requester_name": "Yuki Senarath",
+      "requester_id": "EMP-1131",
+      "department": "Operations",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-07-21T13:51:00Z",
+      "needed_by": "2026-07-29",
+      "due_at": "2026-08-05T13:51:00Z",
+      "approved_at": "2026-07-27T08:09:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-02T15:19:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-21T13:51:00Z",
+          "actor": "Yuki Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-23T17:38:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-07-27T08:09:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-02T15:19:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-02T15:19:00Z"
+    },
+    {
+      "id": "REQ-0005",
+      "title": "Air conditioning too cold",
+      "description": "Air conditioning on the east side of level 4 is set too low all day.",
+      "requester_name": "Avery Morrow",
+      "requester_id": "EMP-1173",
+      "department": "Sales",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-07-22T12:40:00Z",
+      "needed_by": "2026-08-19",
+      "due_at": "2026-08-06T12:40:00Z",
+      "approved_at": "2026-08-02T19:46:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-10T07:48:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-22T12:40:00Z",
+          "actor": "Avery Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-29T09:09:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-02T19:46:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-10T07:48:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-08-10T07:48:00Z"
+    },
+    {
+      "id": "REQ-0006",
+      "title": "Additional storage cabinet",
+      "description": "Need a lockable cabinet for confidential Operations documents.",
+      "requester_name": "Dilini Morrow",
+      "requester_id": "EMP-1145",
+      "department": "Operations",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-07-23T10:22:00Z",
+      "needed_by": "2026-08-12",
+      "due_at": "2026-08-07T10:22:00Z",
+      "approved_at": "2026-08-18T21:33:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-08T15:50:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-23T10:22:00Z",
+          "actor": "Dilini Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-23T18:48:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-18T21:33:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-08T15:50:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-09-08T15:50:00Z"
+    },
+    {
+      "id": "REQ-0007",
+      "title": "New starter account setup",
+      "description": "Create network, email and HR system accounts for a new team member starting next week.",
+      "requester_name": "Leon Vale",
+      "requester_id": "EMP-1117",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Critical",
+      "status": "Completed",
+      "created_at": "2026-07-24T09:32:00Z",
+      "needed_by": "2026-08-15",
+      "due_at": "2026-07-26T09:32:00Z",
+      "approved_at": "2026-07-25T04:09:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-07-26T01:01:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-24T09:32:00Z",
+          "actor": "Leon Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-24T19:56:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-07-25T04:09:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-07-26T01:01:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-07-26T01:01:00Z"
+    },
+    {
+      "id": "REQ-0008",
+      "title": "CRM read-only access",
+      "description": "Read-only access to the CRM is needed to review customer account history.",
+      "requester_name": "Tess Morrow",
+      "requester_id": "EMP-1180",
+      "department": "Sales",
+      "request_type": "IT Access",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-07-29T10:23:00Z",
+      "needed_by": "2026-08-27",
+      "due_at": "2026-08-08T10:23:00Z",
+      "approved_at": "2026-08-02T06:51:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-03T13:02:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-29T10:23:00Z",
+          "actor": "Tess Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-07-30T02:03:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-02T06:51:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-03T13:02:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-03T13:02:00Z"
+    },
+    {
+      "id": "REQ-0009",
+      "title": "Broken office chair",
+      "description": "Chair gas lift has failed; requesting a replacement chair.",
+      "requester_name": "Nadia Vale",
+      "requester_id": "EMP-1229",
+      "department": "Legal",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-07-30T14:29:00Z",
+      "needed_by": "2026-08-24",
+      "due_at": "2026-08-14T14:29:00Z",
+      "approved_at": "2026-08-06T20:55:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-10T08:14:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-07-30T14:29:00Z",
+          "actor": "Nadia Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-02T06:58:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-06T20:55:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-10T08:14:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-08-10T08:14:00Z"
+    },
+    {
+      "id": "REQ-0010",
+      "title": "VPN access for remote work",
+      "description": "Need VPN access to work from home two days a week per the hybrid policy.",
+      "requester_name": "Jordan Quill",
+      "requester_id": "EMP-1103",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-08-04T11:36:00Z",
+      "needed_by": "2026-08-15",
+      "due_at": "2026-08-19T11:36:00Z",
+      "approved_at": "2026-08-09T10:43:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-11T19:39:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-04T11:36:00Z",
+          "actor": "Jordan Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-06T06:23:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-09T10:43:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-11T19:39:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-11T19:39:00Z"
+    },
+    {
+      "id": "REQ-0011",
+      "title": "Access to reporting database",
+      "description": "Analyst access to the reporting replica for the monthly Finance dashboard.",
+      "requester_name": "Ravi Vale",
+      "requester_id": "EMP-1068",
+      "department": "Finance",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Rejected",
+      "created_at": "2026-08-05T12:56:00Z",
+      "needed_by": "2026-08-16",
+      "due_at": "2026-08-20T12:56:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-08-09T10:42:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-05T12:56:00Z",
+          "actor": "Ravi Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-06T20:04:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-08-09T10:42:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: insufficient business justification provided."
+        }
+      ],
+      "updated_at": "2026-08-09T10:42:00Z"
+    },
+    {
+      "id": "REQ-0012",
+      "title": "Access to IT shared drive",
+      "description": "Please grant read/write access to the IT team shared drive for quarterly reporting.",
+      "requester_name": "Dilini Marsh",
+      "requester_id": "EMP-1124",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-12T17:13:00Z",
+      "needed_by": "2026-08-21",
+      "due_at": "2026-08-22T17:13:00Z",
+      "approved_at": "2026-08-15T05:16:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-18T01:38:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-12T17:13:00Z",
+          "actor": "Dilini Marsh",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-13T14:54:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-15T05:16:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-18T01:38:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-18T01:38:00Z"
+    },
+    {
+      "id": "REQ-0013",
+      "title": "Design software licence",
+      "description": "Licence for the design suite to produce HR campaign material.",
+      "requester_name": "Rowan Quill",
+      "requester_id": "EMP-1075",
+      "department": "HR",
+      "request_type": "Software Licence",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-14T12:39:00Z",
+      "needed_by": "2026-08-31",
+      "due_at": "2026-08-24T12:39:00Z",
+      "approved_at": "2026-08-18T11:44:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-20T22:12:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-14T12:39:00Z",
+          "actor": "Rowan Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-15T06:15:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-18T11:44:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-20T22:12:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-20T22:12:00Z"
+    },
+    {
+      "id": "REQ-0014",
+      "title": "Replacement laptop",
+      "description": "Current laptop battery lasts under an hour and the hinge is cracked. Requesting a replacement.",
+      "requester_name": "Avery Okafor-Lane",
+      "requester_id": "EMP-1222",
+      "department": "Legal",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Rejected",
+      "created_at": "2026-08-18T11:12:00Z",
+      "needed_by": "2026-08-29",
+      "due_at": "2026-08-28T11:12:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-08-21T19:30:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-18T11:12:00Z",
+          "actor": "Avery Okafor-Lane",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-20T01:59:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-08-21T19:30:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: access must be requested by the data owner."
+        }
+      ],
+      "updated_at": "2026-08-21T19:30:00Z"
+    },
+    {
+      "id": "REQ-0015",
+      "title": "Project management tool seat",
+      "description": "Add a seat on the project management tool for cross-team planning.",
+      "requester_name": "Dilini Morrow",
+      "requester_id": "EMP-1145",
+      "department": "Operations",
+      "request_type": "Software Licence",
+      "priority": "Medium",
+      "status": "Rejected",
+      "created_at": "2026-08-18T11:37:00Z",
+      "needed_by": "2026-09-16",
+      "due_at": "2026-08-28T11:37:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-08-20T16:22:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-18T11:37:00Z",
+          "actor": "Dilini Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-19T23:53:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-08-20T16:22:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: access must be requested by the data owner."
+        }
+      ],
+      "updated_at": "2026-08-20T16:22:00Z"
+    },
+    {
+      "id": "REQ-0016",
+      "title": "Design software licence",
+      "description": "Licence for the design suite to produce IT campaign material.",
+      "requester_name": "Rowan Vale",
+      "requester_id": "EMP-1110",
+      "department": "IT",
+      "request_type": "Software Licence",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-18T13:02:00Z",
+      "needed_by": "2026-09-12",
+      "due_at": "2026-08-28T13:02:00Z",
+      "approved_at": "2026-08-21T09:30:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-23T01:04:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-18T13:02:00Z",
+          "actor": "Rowan Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-20T02:46:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-21T09:30:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-23T01:04:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-23T01:04:00Z"
+    },
+    {
+      "id": "REQ-0017",
+      "title": "Docking station",
+      "description": "Requesting a USB-C docking station for hot-desk use.",
+      "requester_name": "Rowan Vale",
+      "requester_id": "EMP-1110",
+      "department": "IT",
+      "request_type": "Equipment",
+      "priority": "High",
+      "status": "Completed",
+      "created_at": "2026-08-19T11:14:00Z",
+      "needed_by": "2026-09-12",
+      "due_at": "2026-08-24T11:14:00Z",
+      "approved_at": "2026-08-20T17:12:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-23T00:49:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-19T11:14:00Z",
+          "actor": "Rowan Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-20T05:09:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-20T17:12:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-23T00:49:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-08-23T00:49:00Z"
+    },
+    {
+      "id": "REQ-0018",
+      "title": "Access to reporting database",
+      "description": "Analyst access to the reporting replica for the monthly Operations dashboard.",
+      "requester_name": "Amara Delacroix-Ray",
+      "requester_id": "EMP-1138",
+      "department": "Operations",
+      "request_type": "IT Access",
+      "priority": "Critical",
+      "status": "Completed",
+      "created_at": "2026-08-19T15:52:00Z",
+      "needed_by": "2026-09-17",
+      "due_at": "2026-08-21T15:52:00Z",
+      "approved_at": "2026-08-20T00:57:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-20T07:54:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-19T15:52:00Z",
+          "actor": "Amara Delacroix-Ray",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-19T17:06:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-20T00:57:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-20T07:54:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-20T07:54:00Z"
+    },
+    {
+      "id": "REQ-0019",
+      "title": "Air conditioning too cold",
+      "description": "Air conditioning on the east side of level 4 is set too low all day.",
+      "requester_name": "Avery Morrow",
+      "requester_id": "EMP-1173",
+      "department": "Sales",
+      "request_type": "Facilities",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-19T16:48:00Z",
+      "needed_by": "2026-08-26",
+      "due_at": "2026-08-29T16:48:00Z",
+      "approved_at": "2026-08-22T22:10:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-25T23:42:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-19T16:48:00Z",
+          "actor": "Avery Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-21T05:12:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-22T22:10:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-25T23:42:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-08-25T23:42:00Z"
+    },
+    {
+      "id": "REQ-0020",
+      "title": "PDF editor licence",
+      "description": "Need a PDF editor to prepare and sign contract documents.",
+      "requester_name": "Dilini Morrow",
+      "requester_id": "EMP-1145",
+      "department": "Operations",
+      "request_type": "Software Licence",
+      "priority": "Critical",
+      "status": "Completed",
+      "created_at": "2026-08-20T17:20:00Z",
+      "needed_by": "2026-09-07",
+      "due_at": "2026-08-22T17:20:00Z",
+      "approved_at": "2026-08-24T12:13:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-24T21:25:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-20T17:20:00Z",
+          "actor": "Dilini Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-20T22:31:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-24T12:13:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-24T21:25:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-24T21:25:00Z"
+    },
+    {
+      "id": "REQ-0021",
+      "title": "New starter account setup",
+      "description": "Create network, email and HR system accounts for a new team member starting next week.",
+      "requester_name": "Elena Quill",
+      "requester_id": "EMP-1159",
+      "department": "Sales",
+      "request_type": "IT Access",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-21T09:47:00Z",
+      "needed_by": "2026-09-08",
+      "due_at": "2026-08-31T09:47:00Z",
+      "approved_at": "2026-08-22T10:08:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-25T10:37:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-21T09:47:00Z",
+          "actor": "Elena Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-21T18:37:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-22T10:08:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-25T10:37:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-25T10:37:00Z"
+    },
+    {
+      "id": "REQ-0022",
+      "title": "Headset for calls",
+      "description": "Need a noise-cancelling headset for daily client calls.",
+      "requester_name": "Jordan Quill",
+      "requester_id": "EMP-1103",
+      "department": "IT",
+      "request_type": "Equipment",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-08-21T13:19:00Z",
+      "needed_by": "2026-09-11",
+      "due_at": "2026-09-05T13:19:00Z",
+      "approved_at": "2026-09-03T10:41:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-16T20:12:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-21T13:19:00Z",
+          "actor": "Jordan Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-01T07:13:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-03T10:41:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-16T20:12:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-09-16T20:12:00Z"
+    },
+    {
+      "id": "REQ-0023",
+      "title": "Access to reporting database",
+      "description": "Analyst access to the reporting replica for the monthly HR dashboard.",
+      "requester_name": "Rowan Quill",
+      "requester_id": "EMP-1075",
+      "department": "HR",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-08-24T13:55:00Z",
+      "needed_by": "2026-09-22",
+      "due_at": "2026-09-08T13:55:00Z",
+      "approved_at": "2026-08-27T11:01:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-12T15:07:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-24T13:55:00Z",
+          "actor": "Rowan Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-26T06:36:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-27T11:01:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-12T15:07:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-09-12T15:07:00Z"
+    },
+    {
+      "id": "REQ-0024",
+      "title": "Access to Marketing shared drive",
+      "description": "Please grant read/write access to the Marketing team shared drive for quarterly reporting.",
+      "requester_name": "Tariq Senarath",
+      "requester_id": "EMP-1208",
+      "department": "Marketing",
+      "request_type": "IT Access",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-24T15:28:00Z",
+      "needed_by": "2026-09-21",
+      "due_at": "2026-09-03T15:28:00Z",
+      "approved_at": "2026-08-26T03:06:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-08-28T15:56:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-24T15:28:00Z",
+          "actor": "Tariq Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-24T23:36:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-08-26T03:06:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-08-28T15:56:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-08-28T15:56:00Z"
+    },
+    {
+      "id": "REQ-0025",
+      "title": "Statistics package licence",
+      "description": "Licence for a statistics package for forecasting work.",
+      "requester_name": "Priya Senarath",
+      "requester_id": "EMP-1061",
+      "department": "Finance",
+      "request_type": "Software Licence",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-08-27T10:26:00Z",
+      "needed_by": "2026-09-08",
+      "due_at": "2026-09-11T10:26:00Z",
+      "approved_at": "2026-09-01T16:13:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-04T17:13:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-27T10:26:00Z",
+          "actor": "Priya Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-29T10:41:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-01T16:13:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-04T17:13:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-09-04T17:13:00Z"
+    },
+    {
+      "id": "REQ-0026",
+      "title": "Replacement laptop",
+      "description": "Current laptop battery lasts under an hour and the hinge is cracked. Requesting a replacement.",
+      "requester_name": "Mei Quill",
+      "requester_id": "EMP-1215",
+      "department": "Legal",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-08-28T11:40:00Z",
+      "needed_by": "2026-09-09",
+      "due_at": "2026-09-07T11:40:00Z",
+      "approved_at": "2026-09-13T03:39:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-14T18:05:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-28T11:40:00Z",
+          "actor": "Mei Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-08-29T12:55:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-13T03:39:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-14T18:05:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-09-14T18:05:00Z"
+    },
+    {
+      "id": "REQ-0027",
+      "title": "Access to reporting database",
+      "description": "Analyst access to the reporting replica for the monthly HR dashboard.",
+      "requester_name": "Rowan Quill",
+      "requester_id": "EMP-1075",
+      "department": "HR",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Rejected",
+      "created_at": "2026-08-31T14:43:00Z",
+      "needed_by": "2026-09-26",
+      "due_at": "2026-09-15T14:43:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-09-04T23:04:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-08-31T14:43:00Z",
+          "actor": "Rowan Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-03T08:10:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-09-04T23:04:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: please use the standard equipment catalogue item instead."
+        }
+      ],
+      "updated_at": "2026-09-04T23:04:00Z"
+    },
+    {
+      "id": "REQ-0028",
+      "title": "Replacement laptop",
+      "description": "Current laptop battery lasts under an hour and the hinge is cracked. Requesting a replacement.",
+      "requester_name": "Mei Quill",
+      "requester_id": "EMP-1215",
+      "department": "Legal",
+      "request_type": "Equipment",
+      "priority": "High",
+      "status": "Completed",
+      "created_at": "2026-09-01T09:08:00Z",
+      "needed_by": "2026-09-25",
+      "due_at": "2026-09-06T09:08:00Z",
+      "approved_at": "2026-09-02T23:02:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-04T06:57:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-01T09:08:00Z",
+          "actor": "Mei Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-01T14:46:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-02T23:02:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-04T06:57:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-09-04T06:57:00Z"
+    },
+    {
+      "id": "REQ-0029",
+      "title": "VPN access for remote work",
+      "description": "Need VPN access to work from home two days a week per the hybrid policy.",
+      "requester_name": "Dilini Marsh",
+      "requester_id": "EMP-1124",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-09-02T12:42:00Z",
+      "needed_by": "2026-09-30",
+      "due_at": "2026-09-17T12:42:00Z",
+      "approved_at": "2026-09-07T03:10:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-09T19:25:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-02T12:42:00Z",
+          "actor": "Dilini Marsh",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-03T09:26:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-07T03:10:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-09T19:25:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-09-09T19:25:00Z"
+    },
+    {
+      "id": "REQ-0030",
+      "title": "Statistics package licence",
+      "description": "Licence for a statistics package for forecasting work.",
+      "requester_name": "Lena Delacroix-Ray",
+      "requester_id": "EMP-1047",
+      "department": "Finance",
+      "request_type": "Software Licence",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-09-03T08:35:00Z",
+      "needed_by": "2026-09-14",
+      "due_at": "2026-09-13T08:35:00Z",
+      "approved_at": "2026-09-23T14:01:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-26T21:13:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-03T08:35:00Z",
+          "actor": "Lena Delacroix-Ray",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-04T21:25:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-23T14:01:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-26T21:13:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-09-26T21:13:00Z"
+    },
+    {
+      "id": "REQ-0031",
+      "title": "Replacement laptop",
+      "description": "Current laptop battery lasts under an hour and the hinge is cracked. Requesting a replacement.",
+      "requester_name": "Rowan Quill",
+      "requester_id": "EMP-1075",
+      "department": "HR",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Rejected",
+      "created_at": "2026-09-03T15:35:00Z",
+      "needed_by": "2026-09-30",
+      "due_at": "2026-09-13T15:35:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-09-07T16:44:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-03T15:35:00Z",
+          "actor": "Rowan Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-05T00:05:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-09-07T16:44:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: insufficient business justification provided."
+        }
+      ],
+      "updated_at": "2026-09-07T16:44:00Z"
+    },
+    {
+      "id": "REQ-0032",
+      "title": "VPN access for remote work",
+      "description": "Need VPN access to work from home two days a week per the hybrid policy.",
+      "requester_name": "Rowan Vale",
+      "requester_id": "EMP-1110",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Critical",
+      "status": "Completed",
+      "created_at": "2026-09-03T15:52:00Z",
+      "needed_by": "2026-09-17",
+      "due_at": "2026-09-05T15:52:00Z",
+      "approved_at": "2026-09-04T16:01:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-05T09:53:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-03T15:52:00Z",
+          "actor": "Rowan Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-04T02:58:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-04T16:01:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-05T09:53:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Service Desk."
+        }
+      ],
+      "updated_at": "2026-09-05T09:53:00Z"
+    },
+    {
+      "id": "REQ-0033",
+      "title": "Ergonomic keyboard and mouse",
+      "description": "Ergonomic peripherals recommended after a workstation assessment.",
+      "requester_name": "Avery Morrow",
+      "requester_id": "EMP-1173",
+      "department": "Sales",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Rejected",
+      "created_at": "2026-09-03T16:07:00Z",
+      "needed_by": "2026-09-10",
+      "due_at": "2026-09-13T16:07:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-09-08T02:45:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-03T16:07:00Z",
+          "actor": "Avery Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-04T13:47:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-09-08T02:45:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: no budget remaining this quarter."
+        }
+      ],
+      "updated_at": "2026-09-08T02:45:00Z"
+    },
+    {
+      "id": "REQ-0034",
+      "title": "VPN access for remote work",
+      "description": "Need VPN access to work from home two days a week per the hybrid policy.",
+      "requester_name": "Dilini Marsh",
+      "requester_id": "EMP-1124",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Medium",
+      "status": "Rejected",
+      "created_at": "2026-09-05T13:07:00Z",
+      "needed_by": "2026-09-15",
+      "due_at": "2026-09-15T13:07:00Z",
+      "approved_at": null,
+      "rejected_at": "2026-09-25T07:35:00Z",
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-05T13:07:00Z",
+          "actor": "Dilini Marsh",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-07T11:54:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Under review."
+        },
+        {
+          "status": "Rejected",
+          "at": "2026-09-25T07:35:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Rejected: no budget remaining this quarter."
+        }
+      ],
+      "updated_at": "2026-09-25T07:35:00Z"
+    },
+    {
+      "id": "REQ-0035",
+      "title": "Air conditioning too cold",
+      "description": "Air conditioning on the east side of level 4 is set too low all day.",
+      "requester_name": "Lena Lindqvist",
+      "requester_id": "EMP-1096",
+      "department": "HR",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-09-10T15:42:00Z",
+      "needed_by": "2026-10-01",
+      "due_at": "2026-09-25T15:42:00Z",
+      "approved_at": "2026-09-16T16:24:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-24T05:50:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-10T15:42:00Z",
+          "actor": "Lena Lindqvist",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-11T21:29:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-16T16:24:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-24T05:50:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-09-24T05:50:00Z"
+    },
+    {
+      "id": "REQ-0036",
+      "title": "Second monitor",
+      "description": "Requesting a second 24-inch monitor to work with large spreadsheets.",
+      "requester_name": "Dilini Morrow",
+      "requester_id": "EMP-1145",
+      "department": "Operations",
+      "request_type": "Equipment",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-09-14T16:00:00Z",
+      "needed_by": "2026-09-29",
+      "due_at": "2026-09-29T16:00:00Z",
+      "approved_at": "2026-09-22T19:18:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-25T12:45:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-14T16:00:00Z",
+          "actor": "Dilini Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-17T20:47:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-22T19:18:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-25T12:45:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-09-25T12:45:00Z"
+    },
+    {
+      "id": "REQ-0037",
+      "title": "Docking station",
+      "description": "Requesting a USB-C docking station for hot-desk use.",
+      "requester_name": "Yuki Vale",
+      "requester_id": "EMP-1152",
+      "department": "Operations",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Completed",
+      "created_at": "2026-09-15T12:31:00Z",
+      "needed_by": "2026-10-02",
+      "due_at": "2026-09-25T12:31:00Z",
+      "approved_at": "2026-09-18T08:12:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-21T19:26:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-15T12:31:00Z",
+          "actor": "Yuki Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-15T18:55:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-18T08:12:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-21T19:26:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-09-21T19:26:00Z"
+    },
+    {
+      "id": "REQ-0038",
+      "title": "Broken office chair",
+      "description": "Chair gas lift has failed; requesting a replacement chair.",
+      "requester_name": "Avery Senarath",
+      "requester_id": "EMP-1082",
+      "department": "HR",
+      "request_type": "Facilities",
+      "priority": "High",
+      "status": "Completed",
+      "created_at": "2026-09-16T12:55:00Z",
+      "needed_by": "2026-09-28",
+      "due_at": "2026-09-21T12:55:00Z",
+      "approved_at": "2026-09-18T14:26:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-09-23T15:32:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-16T12:55:00Z",
+          "actor": "Avery Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-17T23:15:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-09-18T14:26:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-09-23T15:32:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by Facilities Team."
+        }
+      ],
+      "updated_at": "2026-09-23T15:32:00Z"
+    },
+    {
+      "id": "REQ-0039",
+      "title": "Additional storage cabinet",
+      "description": "Need a lockable cabinet for confidential IT documents.",
+      "requester_name": "Leon Vale",
+      "requester_id": "EMP-1117",
+      "department": "IT",
+      "request_type": "Facilities",
+      "priority": "Medium",
+      "status": "Submitted",
+      "created_at": "2026-09-21T12:16:00Z",
+      "needed_by": "2026-10-15",
+      "due_at": "2026-10-01T12:16:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-21T12:16:00Z",
+          "actor": "Leon Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-09-21T12:16:00Z"
+    },
+    {
+      "id": "REQ-0040",
+      "title": "Training course approval",
+      "description": "Approval to attend an external two-day training course.",
+      "requester_name": "Leon Vale",
+      "requester_id": "EMP-1117",
+      "department": "IT",
+      "request_type": "Other",
+      "priority": "Critical",
+      "status": "Under Review",
+      "created_at": "2026-09-23T08:06:00Z",
+      "needed_by": "2026-10-14",
+      "due_at": "2026-09-25T08:06:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-23T08:06:00Z",
+          "actor": "Leon Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-23T12:28:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        }
+      ],
+      "updated_at": "2026-09-23T12:28:00Z"
+    },
+    {
+      "id": "REQ-0041",
+      "title": "Statistics package licence",
+      "description": "Licence for a statistics package for forecasting work.",
+      "requester_name": "Yuki Vale",
+      "requester_id": "EMP-1152",
+      "department": "Operations",
+      "request_type": "Software Licence",
+      "priority": "Medium",
+      "status": "Submitted",
+      "created_at": "2026-09-25T08:21:00Z",
+      "needed_by": "2026-10-21",
+      "due_at": "2026-10-05T08:21:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-25T08:21:00Z",
+          "actor": "Yuki Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-09-25T08:21:00Z"
+    },
+    {
+      "id": "REQ-0042",
+      "title": "Second monitor",
+      "description": "Requesting a second 24-inch monitor to work with large spreadsheets.",
+      "requester_name": "Tariq Senarath",
+      "requester_id": "EMP-1208",
+      "department": "Marketing",
+      "request_type": "Equipment",
+      "priority": "Low",
+      "status": "Approved",
+      "created_at": "2026-09-26T14:29:00Z",
+      "needed_by": "2026-10-11",
+      "due_at": "2026-10-11T14:29:00Z",
+      "approved_at": "2026-10-02T23:31:00Z",
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-26T14:29:00Z",
+          "actor": "Tariq Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-09-29T00:32:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-02T23:31:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved."
+        }
+      ],
+      "updated_at": "2026-10-02T23:31:00Z"
+    },
+    {
+      "id": "REQ-0043",
+      "title": "Reset MFA device",
+      "description": "Lost my phone and need the MFA device re-registered on my account.",
+      "requester_name": "Tariq Senarath",
+      "requester_id": "EMP-1208",
+      "department": "Marketing",
+      "request_type": "IT Access",
+      "priority": "Critical",
+      "status": "Submitted",
+      "created_at": "2026-09-27T15:38:00Z",
+      "needed_by": "2026-10-08",
+      "due_at": "2026-09-29T15:38:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-27T15:38:00Z",
+          "actor": "Tariq Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-09-27T15:38:00Z"
+    },
+    {
+      "id": "REQ-0044",
+      "title": "Headset for calls",
+      "description": "Need a noise-cancelling headset for daily client calls.",
+      "requester_name": "Tariq Senarath",
+      "requester_id": "EMP-1208",
+      "department": "Marketing",
+      "request_type": "Equipment",
+      "priority": "High",
+      "status": "Submitted",
+      "created_at": "2026-09-29T16:51:00Z",
+      "needed_by": "2026-10-21",
+      "due_at": "2026-10-04T16:51:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-09-29T16:51:00Z",
+          "actor": "Tariq Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-09-29T16:51:00Z"
+    },
+    {
+      "id": "REQ-0045",
+      "title": "Second monitor",
+      "description": "Requesting a second 24-inch monitor to work with large spreadsheets.",
+      "requester_name": "Yuki Senarath",
+      "requester_id": "EMP-1131",
+      "department": "Operations",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Under Review",
+      "created_at": "2026-10-01T13:34:00Z",
+      "needed_by": "2026-10-19",
+      "due_at": "2026-10-11T13:34:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-01T13:34:00Z",
+          "actor": "Yuki Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-02T14:40:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        }
+      ],
+      "updated_at": "2026-10-02T14:40:00Z"
+    },
+    {
+      "id": "REQ-0046",
+      "title": "Desk move for Finance team",
+      "description": "Relocate four desks so the Finance team can sit together on level 2.",
+      "requester_name": "Ravi Vale",
+      "requester_id": "EMP-1068",
+      "department": "Finance",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Submitted",
+      "created_at": "2026-10-03T11:23:00Z",
+      "needed_by": "2026-10-22",
+      "due_at": "2026-10-18T11:23:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-03T11:23:00Z",
+          "actor": "Ravi Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-10-03T11:23:00Z"
+    },
+    {
+      "id": "REQ-0047",
+      "title": "Headset for calls",
+      "description": "Need a noise-cancelling headset for daily client calls.",
+      "requester_name": "Priya Senarath",
+      "requester_id": "EMP-1061",
+      "department": "Finance",
+      "request_type": "Equipment",
+      "priority": "Critical",
+      "status": "Completed",
+      "created_at": "2026-10-06T16:07:00Z",
+      "needed_by": "2026-10-10",
+      "due_at": "2026-10-08T16:07:00Z",
+      "approved_at": "2026-10-07T11:56:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-10-08T04:29:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-06T16:07:00Z",
+          "actor": "Priya Senarath",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-07T03:52:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-07T11:56:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, within budget."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-10-08T04:29:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-10-08T04:29:00Z"
+    },
+    {
+      "id": "REQ-0048",
+      "title": "Docking station",
+      "description": "Requesting a USB-C docking station for hot-desk use.",
+      "requester_name": "Dilini Marsh",
+      "requester_id": "EMP-1124",
+      "department": "IT",
+      "request_type": "Equipment",
+      "priority": "Low",
+      "status": "Under Review",
+      "created_at": "2026-10-08T14:02:00Z",
+      "needed_by": "2026-11-05",
+      "due_at": "2026-10-23T14:02:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-08T14:02:00Z",
+          "actor": "Dilini Marsh",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-08T23:57:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        }
+      ],
+      "updated_at": "2026-10-08T23:57:00Z"
+    },
+    {
+      "id": "REQ-0049",
+      "title": "Access to Marketing shared drive",
+      "description": "Please grant read/write access to the Marketing team shared drive for quarterly reporting.",
+      "requester_name": "Yuki Brightwater",
+      "requester_id": "EMP-1201",
+      "department": "Marketing",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Under Review",
+      "created_at": "2026-10-12T08:09:00Z",
+      "needed_by": "2026-11-07",
+      "due_at": "2026-10-27T08:09:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-12T08:09:00Z",
+          "actor": "Yuki Brightwater",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-14T19:00:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        }
+      ],
+      "updated_at": "2026-10-14T19:00:00Z"
+    },
+    {
+      "id": "REQ-0050",
+      "title": "Docking station",
+      "description": "Requesting a USB-C docking station for hot-desk use.",
+      "requester_name": "Hugo Quill",
+      "requester_id": "EMP-1187",
+      "department": "Marketing",
+      "request_type": "Equipment",
+      "priority": "Low",
+      "status": "Completed",
+      "created_at": "2026-10-13T12:17:00Z",
+      "needed_by": "2026-11-05",
+      "due_at": "2026-10-28T12:17:00Z",
+      "approved_at": "2026-10-20T17:19:00Z",
+      "rejected_at": null,
+      "completed_at": "2026-10-25T03:19:00Z",
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-13T12:17:00Z",
+          "actor": "Hugo Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-19T10:18:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-20T17:19:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        },
+        {
+          "status": "Completed",
+          "at": "2026-10-25T03:19:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Fulfilled by IT Asset Team."
+        }
+      ],
+      "updated_at": "2026-10-25T03:19:00Z"
+    },
+    {
+      "id": "REQ-0051",
+      "title": "Design software licence",
+      "description": "Licence for the design suite to produce Operations campaign material.",
+      "requester_name": "Yuki Vale",
+      "requester_id": "EMP-1152",
+      "department": "Operations",
+      "request_type": "Software Licence",
+      "priority": "Medium",
+      "status": "Approved",
+      "created_at": "2026-10-15T09:07:00Z",
+      "needed_by": "2026-10-25",
+      "due_at": "2026-10-25T09:07:00Z",
+      "approved_at": "2026-10-19T14:04:00Z",
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-15T09:07:00Z",
+          "actor": "Yuki Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-16T09:59:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-19T14:04:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved after checking with department head."
+        }
+      ],
+      "updated_at": "2026-10-19T14:04:00Z"
+    },
+    {
+      "id": "REQ-0052",
+      "title": "Docking station",
+      "description": "Requesting a USB-C docking station for hot-desk use.",
+      "requester_name": "Yuki Brightwater",
+      "requester_id": "EMP-1201",
+      "department": "Marketing",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Submitted",
+      "created_at": "2026-10-19T13:11:00Z",
+      "needed_by": "2026-11-14",
+      "due_at": "2026-10-29T13:11:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-19T13:11:00Z",
+          "actor": "Yuki Brightwater",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-10-19T13:11:00Z"
+    },
+    {
+      "id": "REQ-0053",
+      "title": "Desk move for Operations team",
+      "description": "Relocate four desks so the Operations team can sit together on level 2.",
+      "requester_name": "Amara Delacroix-Ray",
+      "requester_id": "EMP-1138",
+      "department": "Operations",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Under Review",
+      "created_at": "2026-10-20T15:09:00Z",
+      "needed_by": "2026-11-07",
+      "due_at": "2026-11-04T15:09:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-20T15:09:00Z",
+          "actor": "Amara Delacroix-Ray",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-23T00:50:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        }
+      ],
+      "updated_at": "2026-10-23T00:50:00Z"
+    },
+    {
+      "id": "REQ-0054",
+      "title": "Air conditioning too cold",
+      "description": "Air conditioning on the east side of level 4 is set too low all day.",
+      "requester_name": "Rowan Vale",
+      "requester_id": "EMP-1110",
+      "department": "IT",
+      "request_type": "Facilities",
+      "priority": "Medium",
+      "status": "Under Review",
+      "created_at": "2026-10-21T09:34:00Z",
+      "needed_by": "2026-11-11",
+      "due_at": "2026-10-31T09:34:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-21T09:34:00Z",
+          "actor": "Rowan Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-22T12:14:00Z",
+          "actor": "Devika Ranasuriya (Ops Manager)",
+          "role": "Manager",
+          "comment": "Reviewing with budget owner."
+        }
+      ],
+      "updated_at": "2026-10-22T12:14:00Z"
+    },
+    {
+      "id": "REQ-0055",
+      "title": "Headset for calls",
+      "description": "Need a noise-cancelling headset for daily client calls.",
+      "requester_name": "Amara Delacroix-Ray",
+      "requester_id": "EMP-1138",
+      "department": "Operations",
+      "request_type": "Equipment",
+      "priority": "Medium",
+      "status": "Approved",
+      "created_at": "2026-10-26T09:26:00Z",
+      "needed_by": "2026-11-09",
+      "due_at": "2026-11-05T09:26:00Z",
+      "approved_at": "2026-10-28T19:40:00Z",
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-26T09:26:00Z",
+          "actor": "Amara Delacroix-Ray",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-27T15:53:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": ""
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-28T19:40:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved."
+        }
+      ],
+      "updated_at": "2026-10-28T19:40:00Z"
+    },
+    {
+      "id": "REQ-0056",
+      "title": "Reset MFA device",
+      "description": "Lost my phone and need the MFA device re-registered on my account.",
+      "requester_name": "Dilini Marsh",
+      "requester_id": "EMP-1124",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Low",
+      "status": "Approved",
+      "created_at": "2026-10-26T12:27:00Z",
+      "needed_by": "2026-11-16",
+      "due_at": "2026-11-10T12:27:00Z",
+      "approved_at": "2026-10-28T18:18:00Z",
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-26T12:27:00Z",
+          "actor": "Dilini Marsh",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-26T20:51:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-28T18:18:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved, please prioritise."
+        }
+      ],
+      "updated_at": "2026-10-28T18:18:00Z"
+    },
+    {
+      "id": "REQ-0057",
+      "title": "Project management tool seat",
+      "description": "Add a seat on the project management tool for cross-team planning.",
+      "requester_name": "Hugo Quill",
+      "requester_id": "EMP-1187",
+      "department": "Marketing",
+      "request_type": "Software Licence",
+      "priority": "Low",
+      "status": "Approved",
+      "created_at": "2026-10-26T13:52:00Z",
+      "needed_by": "2026-11-25",
+      "due_at": "2026-11-10T13:52:00Z",
+      "approved_at": "2026-10-28T19:45:00Z",
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-26T13:52:00Z",
+          "actor": "Hugo Quill",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-27T17:33:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        },
+        {
+          "status": "Approved",
+          "at": "2026-10-28T19:45:00Z",
+          "actor": "Morgan Ellery (Ops Manager)",
+          "role": "Manager",
+          "comment": "Approved. Standard request."
+        }
+      ],
+      "updated_at": "2026-10-28T19:45:00Z"
+    },
+    {
+      "id": "REQ-0058",
+      "title": "Air conditioning too cold",
+      "description": "Air conditioning on the east side of level 4 is set too low all day.",
+      "requester_name": "Tess Morrow",
+      "requester_id": "EMP-1180",
+      "department": "Sales",
+      "request_type": "Facilities",
+      "priority": "Low",
+      "status": "Under Review",
+      "created_at": "2026-10-26T14:26:00Z",
+      "needed_by": "2026-11-21",
+      "due_at": "2026-11-10T14:26:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-26T14:26:00Z",
+          "actor": "Tess Morrow",
+          "role": "Staff",
+          "comment": "Request submitted."
+        },
+        {
+          "status": "Under Review",
+          "at": "2026-10-29T08:08:00Z",
+          "actor": "Theo Blackwood (Ops Manager)",
+          "role": "Manager",
+          "comment": "Picked up for review."
+        }
+      ],
+      "updated_at": "2026-10-29T08:08:00Z"
+    },
+    {
+      "id": "REQ-0059",
+      "title": "Access to IT shared drive",
+      "description": "Please grant read/write access to the IT team shared drive for quarterly reporting.",
+      "requester_name": "Leon Vale",
+      "requester_id": "EMP-1117",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "High",
+      "status": "Submitted",
+      "created_at": "2026-10-27T14:42:00Z",
+      "needed_by": "2026-10-30",
+      "due_at": "2026-11-01T14:42:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-27T14:42:00Z",
+          "actor": "Leon Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-10-27T14:42:00Z"
+    },
+    {
+      "id": "REQ-0060",
+      "title": "VPN access for remote work",
+      "description": "Need VPN access to work from home two days a week per the hybrid policy.",
+      "requester_name": "Leon Vale",
+      "requester_id": "EMP-1117",
+      "department": "IT",
+      "request_type": "IT Access",
+      "priority": "Medium",
+      "status": "Submitted",
+      "created_at": "2026-10-28T17:03:00Z",
+      "needed_by": "2026-11-24",
+      "due_at": "2026-11-07T17:03:00Z",
+      "approved_at": null,
+      "rejected_at": null,
+      "completed_at": null,
+      "history": [
+        {
+          "status": "Submitted",
+          "at": "2026-10-28T17:03:00Z",
+          "actor": "Leon Vale",
+          "role": "Staff",
+          "comment": "Request submitted."
+        }
+      ],
+      "updated_at": "2026-10-28T17:03:00Z"
+    }
+  ]
+}
