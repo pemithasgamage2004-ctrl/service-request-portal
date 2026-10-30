@@ -312,3 +312,7 @@ pre.yaml { max-height: 520px; overflow: auto; font-size: 0.78rem; }
   .arch { grid-template-columns: minmax(0, 1fr); }
   .arch-arrow span { transform: rotate(90deg); }
 }
+
+/* Long words (file names, IDs) and long status badges must wrap on small screens. */
+main { overflow-wrap: break-word; }
+.status-legend .badge, td .badge { white-space: normal; }
