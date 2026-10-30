@@ -4,7 +4,7 @@
   "description": "EGUARDIAN Service Request Portal - static site (Vite + vanilla JS)",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/copy-pipeline.mjs",
+    "prebuild": "node scripts/copy-pipeline.mjs && node scripts/build-security-summary.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",

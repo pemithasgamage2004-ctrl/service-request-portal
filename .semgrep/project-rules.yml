@@ -1,0 +1,53 @@
+# Project-specific Semgrep rules (run in CI alongside the Semgrep registry packs).
+# ERROR severity fails the pipeline and blocks deployment.
+rules:
+  - id: no-html-sinks
+    languages: [javascript]
+    severity: ERROR
+    message: >-
+      HTML sink used. This app renders all data with textContent / createTextNode
+      (src/lib/dom.js). Assigning HTML strings enables XSS.
+    pattern-either:
+      - pattern: $EL.innerHTML = $X
+      - pattern: $EL.outerHTML = $X
+      - pattern: $EL.insertAdjacentHTML(...)
+      - pattern: document.write(...)
+      - pattern: document.writeln(...)
+    paths:
+      include: [src/]
+
+  - id: no-dynamic-code-execution
+    languages: [javascript]
+    severity: ERROR
+    message: eval / Function / string timers execute arbitrary code and are blocked by the CSP anyway.
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+      - pattern: setTimeout("...", ...)
+      - pattern: setInterval("...", ...)
+
+  - id: no-inline-event-handler-attribute
+    languages: [javascript]
+    severity: ERROR
+    message: Inline on* handler attributes are blocked by the strict CSP and are an XSS vector; use addEventListener.
+    patterns:
+      - pattern: $EL.setAttribute("$ATTR", ...)
+      - metavariable-regex:
+          metavariable: $ATTR
+          regex: (?i)^on
+    paths:
+      include: [src/]
+
+  - id: localstorage-json-parse-must-be-validated
+    languages: [javascript]
+    severity: WARNING
+    message: Data read from localStorage is untrusted; make sure it is validated (see storedRequestError in src/lib/workflow.js).
+    pattern: JSON.parse(localStorage.getItem(...))
+    paths:
+      include: [src/]
+
+  - id: no-external-script-or-cdn
+    languages: [html]
+    severity: ERROR
+    message: Scripts must be bundled locally (no CDN) so the CSP can stay script-src 'self'.
+    pattern-regex: <script[^>]+src=["']https?://
