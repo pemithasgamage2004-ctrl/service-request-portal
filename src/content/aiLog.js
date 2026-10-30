@@ -74,4 +74,28 @@ export const AI_ISSUES = [
     after: '@media (max-width: 900px) { .wf-layout { grid-template-columns: minmax(0, 1fr); } }',
     fix: 'Used minmax(0, 1fr) so the table scrolls inside its own container; verified scrollWidth = 375 at 375px.',
   },
+  {
+    id: 6,
+    date: '2026-10-30',
+    milestone: 'M4',
+    category: 'Logic / Data accuracy',
+    foundBy: 'Unit test (tests/kpis.test.js) written alongside the code',
+    issue:
+      'The weekly "Volume over time" aggregation ended its week range at the latest submission date. Requests completed after the last submission (common: the newest completions) fell outside every bucket and were silently dropped from the "Completed" series, under-reporting throughput.',
+    before: 'const endMs = to ? Date.parse(to) : Math.max(...created);',
+    after: 'const completed = rows.filter((r) => r.completed_at).map((r) => Date.parse(r.completed_at));\nconst endMs = to ? Date.parse(to) : Math.max(...created, ...completed);',
+    fix: 'When no end-date filter is set, the range now covers completion dates too. The unit test asserts the extra week and its completion count.',
+  },
+  {
+    id: 7,
+    date: '2026-10-30',
+    milestone: 'M4',
+    category: 'Quality / UI bug',
+    foundBy: 'Screenshot review of the Dashboard',
+    issue:
+      'Every chart showed "No requests match the filters" even when data was present. The AI used the HTML hidden attribute to toggle the empty-state message but also gave it `display: grid` in CSS; author CSS overrides the browser\'s default [hidden] { display: none }, so hidden elements stayed visible. The chart grid also auto-fitted to 3+1 columns instead of 2x2.',
+    before: '.chart-empty { height: 120px; display: grid; place-items: center; }   /* el.hidden = true has no effect */',
+    after: '[hidden] { display: none !important; }\n.chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }',
+    fix: 'Added a global [hidden] rule so the attribute always wins, and fixed the chart grid to two columns (one below 860px). Re-verified with screenshots at 1280px and 375px.',
+  },
 ];

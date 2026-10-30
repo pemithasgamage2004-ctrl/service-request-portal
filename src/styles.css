@@ -23,6 +23,8 @@
 }
 
 * { box-sizing: border-box; }
+/* Author display rules (e.g. display:grid) would otherwise override the hidden attribute. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -212,3 +214,32 @@ table.clickable tbody tr:focus-visible { outline: 2px solid var(--brand); outlin
 }
 table code, td.nowrap, .role-label { white-space: nowrap; }
 .detail-head code { align-self: flex-start; }
+
+/* Dashboard */
+.filter-bar { padding-bottom: 6px; }
+.filter-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0 12px; align-items: end; }
+.filter-buttons { display: flex; gap: 6px; }
+.filter-buttons .btn { white-space: nowrap; }
+.source-note { margin: -4px 0 12px; }
+.kpi-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 16px; }
+.kpi { margin-bottom: 0; display: flex; flex-direction: column; }
+.kpi-label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+.kpi-value { font-size: 2rem; font-weight: 700; line-height: 1.15; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.kpi-sub { color: var(--muted); font-size: 0.8rem; min-height: 1.1em; }
+.kpi-help { color: var(--muted); font-size: 0.8rem; margin: 6px 0 4px; flex: 1; }
+.kpi-overdue .kpi-value { color: var(--err); }
+details.sql summary, .chart-card details summary { cursor: pointer; color: var(--brand); font-size: 0.85rem; font-weight: 600; }
+details.sql pre { font-size: 0.75rem; margin-top: 6px; }
+details > summary { padding: 2px 0; }
+.chart-card { margin-bottom: 0; min-width: 0; }
+.chart-card h2 { margin: 0 0 2px; font-size: 1.05rem; }
+.chart-box { position: relative; height: 280px; margin: 8px 0; }
+.chart-empty { height: 120px; display: grid; place-items: center; }
+.chart-grid { margin-bottom: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 860px) { .chart-grid { grid-template-columns: minmax(0, 1fr); } }
+.chart-card .table-wrap { margin: 6px 0; max-height: 260px; overflow-y: auto; }
+@media (max-width: 640px) {
+  .chart-box { height: 240px; }
+  .kpi-value { font-size: 1.6rem; }
+  .grid-2 { grid-template-columns: minmax(0, 1fr); }
+}
