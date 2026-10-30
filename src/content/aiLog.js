@@ -50,4 +50,28 @@ export const AI_ISSUES = [
     after: "el('li', { text: `Weighted draws: department (${fmtWeights(cfg.weights.department)}) ...` })",
     fix: 'The generator now writes its full configuration and weights into requests.json (meta.config), and the page renders the documentation from that, so it always matches the data. CI also regenerates the data and fails if it differs from the committed files.',
   },
+  {
+    id: 4,
+    date: '2026-10-30',
+    milestone: 'M3',
+    category: 'Logic / Resource leak',
+    foundBy: 'AI self-review of the Workflow page before commit',
+    issue:
+      'The Workflow page subscribed to store updates only after the async data load, and kept the unsubscribe handle in a module-level variable shared by every visit. Navigating away before the data finished loading meant the subscription was created after the page was torn down and never removed; each revisit added another listener re-rendering detached DOM.',
+    before: 'getRequests().then(...subscribe(refresh)).then((u) => { cleanupFn = u; });\nreturn () => cleanupFn && cleanupFn();  // cleanupFn is module-level',
+    after: 'let disposed = false; let unsubscribe = null;\ngetRequests().then(() => { if (disposed) return; unsubscribe = subscribe(refresh); });\nreturn () => { disposed = true; if (unsubscribe) unsubscribe(); };',
+    fix: 'Disposal is tracked per page render with a local flag; no subscription is created after disposal and the handle is no longer shared between visits.',
+  },
+  {
+    id: 5,
+    date: '2026-10-30',
+    milestone: 'M3',
+    category: 'Quality / Responsive UI',
+    foundBy: 'Automated Playwright check at 375px width (page scrollWidth 728px)',
+    issue:
+      'On mobile the Workflow layout grid used `grid-template-columns: 1fr`. A `1fr` track has an automatic minimum equal to its content, so the wide request table forced the whole page to 728px and caused horizontal scrolling.',
+    before: '@media (max-width: 900px) { .wf-layout { grid-template-columns: 1fr; } }',
+    after: '@media (max-width: 900px) { .wf-layout { grid-template-columns: minmax(0, 1fr); } }',
+    fix: 'Used minmax(0, 1fr) so the table scrolls inside its own container; verified scrollWidth = 375 at 375px.',
+  },
 ];
