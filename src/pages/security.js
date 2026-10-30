@@ -38,6 +38,8 @@ export default function render(root) {
       ),
     ),
     resultsCard,
+    architectureSection(),
+    threatModelSection(),
     pipelineDesign(),
     yamlCard,
     headersSection(),
@@ -220,6 +222,67 @@ function controlsSection() {
       el('table', {},
         el('thead', {}, el('tr', {}, ['Risk', 'Control', 'How it is verified'].map((h) => el('th', { text: h })))),
         el('tbody', {}, rows.map((r) => el('tr', {}, r.map((c) => el('td', { text: c }))))),
+      ),
+    ),
+  );
+}
+
+// ---------------------------------------------------------------- Architecture (production design)
+function architectureSection() {
+  const box = (title, items, cls = '') => el('div', { class: `arch-box ${cls}` }, el('strong', { text: title }), el('ul', {}, items.map((i) => el('li', { text: i }))));
+  const arrow = (label) => el('div', { class: 'arch-arrow', attrs: { 'aria-hidden': 'true' } }, el('span', { text: '→' }), el('small', { text: label }));
+  return el('div', { class: 'card' },
+    el('h2', { text: 'Architecture (production design)' }),
+    el('p', { class: 'small' },
+      el('span', { class: 'badge badge-ok', text: 'Live on this site' }), ' static front end, Demo mode, CI/CD.  ',
+      el('span', { class: 'badge badge-info', text: 'Built & tested in CI' }), ' database schema, RLS and functions (supabase/migrations).  ',
+      el('span', { class: 'badge badge-warn', text: 'Planned (Phase 3)' }), ' connecting the site to a Supabase project.'),
+    el('div', { class: 'arch', attrs: { role: 'img', 'aria-label': 'Browser on GitHub Pages calls Supabase Auth for sign-in and the Supabase REST/RPC API, which runs PostgreSQL with Row Level Security' } },
+      box('Browser (GitHub Pages)', ['Vite bundle, no CDN, strict CSP', 'Publishable (anon) key only', 'Client validation for usability', 'Demo mode: localStorage + persona switcher'], 'arch-ok'),
+      arrow('① sign in → JWT'),
+      box('Supabase Auth', ['Email + password, email verification', 'Short-lived JWT + refresh token', 'Rate limits on sign-up / sign-in'], 'arch-planned'),
+      arrow('② API calls with JWT'),
+      box('Supabase API → PostgreSQL', ['RLS on every table', 'Reads via policies only', 'Writes only via create_request() / transition_request()', 'Append-only request_history (triggers)', 'kpi_summary() + security_invoker view'], 'arch-tested'),
+    ),
+    el('p', { class: 'small muted', text: 'Flow: the browser signs in with Supabase Auth and receives a signed JWT (①); it then calls the Supabase REST/RPC API directly with that JWT (②). PostgreSQL reads the user from the JWT via auth.uid(), so the RLS policies and functions decide what each user can see and do - nothing depends on the browser.' }),
+    el('div', { class: 'arch-foot small' },
+      box('GitHub Actions', ['Lint + unit tests, Gitleaks, Semgrep, CodeQL, npm audit, DB/RLS tests on Postgres 16', 'Deploy to Pages only from main when all pass', 'Supabase URL + publishable key injected at build (Phase 3)'], 'arch-ok'),
+    ),
+  );
+}
+
+// ---------------------------------------------------------------- Threat model (STRIDE)
+const THREATS = [
+  ['Spoofing', 'A user pretends to be a Manager by changing the role in the browser.', 'Role, department and team come from the server-side profiles table, read via auth.uid() from the signed JWT; the Demo persona switcher is bannered "not secure".', 'tested'],
+  ['Spoofing / Elevation', 'Someone signs up with metadata {"role": "Admin"}.', 'Sign-up trigger always creates Staff; role is never read from metadata; invalid department falls back; name sanitised.', 'tested'],
+  ['Tampering', 'Calling the REST API directly to set status = Approved.', 'API roles have no INSERT/UPDATE/DELETE on requests; writes only through functions that check the transition matrix and the caller.', 'tested'],
+  ['Tampering / Repudiation', 'Editing or deleting status history to hide who approved something.', 'request_history is append-only: no write grants, triggers refuse UPDATE always and DELETE/TRUNCATE without an explicit maintenance flag; each entry stores actor user ID, role and time.', 'tested'],
+  ['Tampering (XSS)', 'Script injected via a request title steals the session token from localStorage.', 'All output via textContent; strict CSP (script-src self); ESLint no-unsanitized + Semgrep + CodeQL in CI.', 'implemented'],
+  ['Information disclosure', 'Staff or another department reads requests they should not see.', 'RLS SELECT policies per role (A15); history visibility follows the request; KPI view/function are security_invoker; "not visible" and "not found" return the same error.', 'tested'],
+  ['Information disclosure', 'Service-role key or raw database errors leak to the browser.', 'Only the publishable key is shipped; build-time key guard (Phase 3); stable SRP4xx codes mapped to generic messages; Gitleaks on every push.', 'planned'],
+  ['Elevation of privilege', 'A Manager approves their own request or another department\'s; a Manager completes work.', 'Approver/fulfiller rules in transition_request(): own requests go to Admin, department must match, only the type\'s fulfilment team completes.', 'tested'],
+  ['Denial of service', 'Sign-up spam or API flooding on the free tier.', 'Supabase Auth rate limits and email quota; open sign-up creates Staff only; nightly demo-data reset. Roadmap: CAPTCHA.', 'planned'],
+  ['Supply chain', 'A compromised npm package or GitHub Action.', 'Lockfile + npm ci, npm audit gate, Dependabot, actions pinned to commit SHAs, CodeQL, Postgres image pinned by digest.', 'implemented'],
+];
+const THREAT_STATUS = {
+  tested: ['Tested in CI', 'badge-ok'],
+  implemented: ['Implemented', 'badge-ok'],
+  planned: ['Planned (Phase 3)', 'badge-warn'],
+};
+
+function threatModelSection() {
+  return el('div', { class: 'card' },
+    el('h2', { text: 'Threat model (STRIDE summary)' }),
+    el('p', { class: 'small muted', text: '"Tested in CI" means an automated test in tests/db (real PostgreSQL) or the unit tests proves the control on every push.' }),
+    el('div', { class: 'table-wrap' },
+      el('table', {},
+        el('thead', {}, el('tr', {}, ['STRIDE', 'Threat', 'Control', 'Status'].map((h) => el('th', { text: h })))),
+        el('tbody', {}, THREATS.map(([cat, threat, control, st]) => el('tr', {},
+          el('td', {}, el('strong', { text: cat })),
+          el('td', { text: threat }),
+          el('td', { class: 'small', text: control }),
+          el('td', {}, el('span', { class: `badge ${THREAT_STATUS[st][1]}`, text: THREAT_STATUS[st][0] })),
+        ))),
       ),
     ),
   );
