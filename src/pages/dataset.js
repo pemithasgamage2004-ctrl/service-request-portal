@@ -1,6 +1,6 @@
 import { el, pageHeader } from '../lib/dom.js';
 import { loadSample, countBy, SAMPLE_CSV_URL, SAMPLE_JSON_URL, HISTORY_CSV_URL } from '../lib/data.js';
-import { DEPARTMENTS, REQUEST_TYPES, PRIORITIES, STATUSES, SLA_DAYS } from '../lib/enums.js';
+import { DEPARTMENTS, REQUEST_TYPES, PRIORITIES, STATUSES, SLA_BUSINESS_DAYS } from '../lib/enums.js';
 import { REQUEST_FIELDS, HISTORY_FIELDS } from '../content/fieldDictionary.js';
 
 const PREVIEW_ROWS = 15;
@@ -91,7 +91,8 @@ export default function render(root) {
             el('li', { text: `Weighted draws (relative weights): department (${fmtWeights(cfg.weights.department)}); type (${fmtWeights(cfg.weights.request_type)}); priority (${fmtWeights(cfg.weights.priority)}).` }),
             el('li', { text: `Each request is walked through the workflow with randomised step durations per priority (review pickup, decision, fulfilment). ${pct(cfg.APPROVAL_PROBABILITY)} of decisions are approvals. ${pct(cfg.STALL_PROBABILITY)} of steps "stall" (${cfg.STALL_FACTOR}x longer) to create realistic SLA breaches.` }),
             el('li', { text: `Backlog: ${pct(cfg.BACKLOG_PROBABILITY)} of requests from the last ${cfg.BACKLOG_WINDOW_DAYS} days stop at a random open stage (Submitted / Under Review / Approved), so there is a realistic open queue.` }),
-            el('li', { text: `No event happens after the simulation time ${meta.as_of}. Due date = submission + SLA (${Object.entries(SLA_DAYS).map(([p, d]) => `${p} ${d}d`).join(', ')}).` }),
+            el('li', { text: `No event happens after the simulation time ${meta.as_of}. Due date = 17:00 Asia/Colombo on the Nth business day after submission, skipping weekends and Sri Lanka public holidays (N: ${Object.entries(SLA_BUSINESS_DAYS).map(([p, d]) => `${p} ${d}`).join(', ')}).` }),
+            el('li', { text: `Each department has its own manager who reviews and decides its requests; ${Math.round(cfg.MANAGER_REQUEST_PROBABILITY * 100)}% of requests are raised by a manager and decided by Admin; the request type's fulfilment team completes approved requests; ${Math.round(cfg.WITHDRAW_PROBABILITY * 100)}% chance a requester withdraws before review.` }),
             el('li', { text: 'Names are random combinations of first/last names from a fixed list; employee IDs are synthetic. No real personal data is used.' }),
           ),
           el('p', { class: 'small muted' }, 'Regenerate with ', el('code', { text: 'node scripts/generate-data.mjs' }), '.'),

@@ -122,4 +122,40 @@ export const AI_ISSUES = [
     after: '@media (max-width: 640px) {\n  .site-nav ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }\n  .site-nav a { white-space: normal; text-align: center; }\n}',
     fix: 'On small screens the nav is a 3-column grid, so all six areas are always visible (verified: 6 of 6 links fully on-screen at 375px); the header is no longer sticky on mobile to save vertical space.',
   },
+  {
+    id: 10,
+    date: '2026-10-30',
+    milestone: 'H1 (hardening)',
+    category: 'Supply chain / Dependency',
+    foundBy: 'npm audit (the same check the CI gate runs), right after install',
+    issue:
+      'When adding Vitest the AI chose `vitest@^3` from its training-time knowledge. That version range depends on tinypool <=2.1.1, which has two CRITICAL prototype-pollution-to-RCE advisories (GHSA-5gmw-xhrv-c9v3, GHSA-85c8-ppgw-ccpr) plus moderate @vitest/mocker advisories. Committing it would have failed the `npm audit --audit-level=critical` gate and blocked deployment.',
+    before: 'npm i -D vitest@^3   ->  3 vulnerabilities (1 moderate, 2 critical)',
+    after: 'npm i -D vitest@5.0.5   ->  found 0 vulnerabilities',
+    fix: 'Checked the current release and its peer requirements (vite ^6.4 || ^7 || ^8, Node >=22.12), installed vitest 5.0.5, raised engines.node to >=22.12, re-ran audit (0 vulnerabilities) and all 25 tests. Lesson: always check current versions instead of relying on remembered ones.',
+  },
+  {
+    id: 11,
+    date: '2026-10-30',
+    milestone: 'H1 (hardening)',
+    category: 'Logic / Regression',
+    foundBy: 'End-to-end headless-browser run of all pages after the workflow-rules refactor',
+    issue:
+      'The AI changed the transition matrix from "target -> list of allowed roles" to "target -> rule name" (approver / fulfiller / requester) to support department scoping and separation of duties, updated the Workflow page and all unit tests, but missed that the Requirements page still rendered the matrix with roles.join(). Every unit test passed while the Requirements page crashed with "TypeError: n.join is not a function".',
+    before: "Object.entries(tos).map(([to, roles]) => [statusBadge(from), statusBadge(to), roles.join(', ')])",
+    after: 'Object.entries(tos).map(([to, rule]) => [statusBadge(from), statusBadge(to), RULE_LABELS[rule]])',
+    fix: 'Render the human-readable RULE_LABELS exported next to TRANSITIONS, so the page cannot drift from the rules again. The page-level smoke test (every page, zero console errors) is now part of the routine before each commit; unit tests alone did not cover page rendering.',
+  },
+  {
+    id: 12,
+    date: '2026-10-30',
+    milestone: 'H1 (hardening)',
+    category: 'Supply chain / CI',
+    foundBy: 'AI self-check with `git ls-remote` before writing the workflow',
+    issue:
+      "The AI's usual SHA lookup (`git ls-remote ... refs/tags/<tag>`) returned 8498dc4… for github/codeql-action v4.39.1. That tag is ANNOTATED, so this SHA is the tag object, not the commit. Pinning `uses: …@<tag-object-sha>` either fails to resolve or does not pin the code that was reviewed. The earlier actions/* pins were checked and are lightweight tags (tag SHA = commit SHA).",
+    before: 'uses: github/codeql-action/init@8498dc4c2b27cdd99baf0f87955b29ebbf30c78d # v4.39.1   (tag object)',
+    after: 'uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1   (peeled commit, refs/tags/v4.39.1^{})',
+    fix: "Always resolve the peeled ref (`refs/tags/<tag>^{}`) and fall back to the tag ref only for lightweight tags. Dependabot keeps the pins current.",
+  },
 ];

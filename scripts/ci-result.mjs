@@ -4,6 +4,7 @@
 // Reads the tool's report file (if present) and keeps only a SAFE summary:
 // counts, rule ids and file paths - never secret values (gitleaks runs with --redact).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readSarifDir } from './sarif.mjs';
 
 const id = process.argv[2];
 const status = process.env.CHECK_STATUS === 'success' ? 'passed' : 'failed';
@@ -14,24 +15,22 @@ const readJson = (f) => {
     return null;
   }
 };
-const readText = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : '');
 
 const CHECKS = {
   lint: {
     name: 'Lint & unit tests',
-    tool: 'ESLint 9 (+ eslint-plugin-no-unsanitized) and node:test',
+    tool: 'ESLint 9 (+ eslint-plugin-no-unsanitized) and Vitest',
     gate: 'Any ESLint error or failing unit test fails the job.',
     summarise() {
       const eslint = readJson('eslint.json') || [];
-      const tests = readText('test-output.txt');
-      const num = (re) => Number((tests.match(re) || [])[1] ?? NaN);
+      const tests = readJson('test-results.json'); // Vitest JSON reporter (vitest.config.js)
       return {
         summary: {
           files_linted: eslint.length,
           eslint_errors: eslint.reduce((s, f) => s + f.errorCount, 0),
           eslint_warnings: eslint.reduce((s, f) => s + f.warningCount, 0),
-          tests_passed: num(/^# pass (\d+)/m),
-          tests_failed: num(/^# fail (\d+)/m),
+          tests_passed: tests?.numPassedTests ?? null,
+          tests_failed: tests?.numFailedTests ?? null,
         },
         findings: eslint.flatMap((f) => f.messages.map((m) => ({ rule: m.ruleId, file: f.filePath.replace(/^.*?\/(src|scripts|tests)\//, '$1/'), line: m.line, severity: m.severity === 2 ? 'error' : 'warning' }))).slice(0, 20),
       };
@@ -85,6 +84,19 @@ const CHECKS = {
           low: v.low ?? null,
         },
         findings: Object.values(report?.vulnerabilities || {}).slice(0, 20).map((x) => ({ package: x.name, severity: x.severity, range: x.range })),
+      };
+    },
+  },
+  codeql: {
+    name: 'Code scanning (CodeQL)',
+    tool: 'GitHub CodeQL: javascript-typescript, security-extended queries',
+    gate: 'Any CRITICAL finding (security-severity >= 9.0) fails the job; all findings are uploaded to GitHub code scanning.',
+    summarise() {
+      const findings = readSarifDir('sarif-results');
+      const by = (b) => (findings ? findings.filter((f) => f.severity === b).length : null);
+      return {
+        summary: { critical: by('critical'), high: by('high'), medium: by('medium'), low: by('low') },
+        findings: (findings || []).slice(0, 20).map((f) => ({ rule: f.rule, severity: f.severity, file: f.file, line: f.line })),
       };
     },
   },

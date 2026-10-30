@@ -26,6 +26,7 @@ export const REQUEST_COLUMNS = [
   'description',
   'requester_name',
   'requester_id',
+  'requester_role',
   'department',
   'request_type',
   'priority',
@@ -36,14 +37,17 @@ export const REQUEST_COLUMNS = [
   'approved_at',
   'rejected_at',
   'completed_at',
+  'withdrawn_at',
   'updated_at',
 ];
 
-export const HISTORY_COLUMNS = ['request_id', 'seq', 'status', 'at', 'actor', 'role', 'comment'];
+export const HISTORY_COLUMNS = ['request_id', 'seq', 'from_status', 'status', 'at', 'actor_id', 'actor', 'role', 'comment'];
 
 /** Flatten nested history into one row per status change (mirrors the SQL history table). */
 export function historyRows(requests) {
   return requests.flatMap((r) =>
-    r.history.map((h, i) => ({ request_id: r.id, seq: i + 1, status: h.status, at: h.at, actor: h.actor, role: h.role, comment: h.comment })),
+    r.history.map((h, i) => ({
+      request_id: r.id, seq: i + 1, from_status: h.from, status: h.status, at: h.at, actor_id: h.actor_id, actor: h.actor, role: h.role, comment: h.comment,
+    })),
   );
 }

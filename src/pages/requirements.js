@@ -1,6 +1,6 @@
 import { el, pageHeader } from '../lib/dom.js';
-import { TRANSITIONS } from '../lib/workflow.js';
-import { PROBLEM, ROLES_TABLE, USER_STORIES, BRIEFING, ASSUMPTIONS, NON_FUNCTIONAL } from '../content/requirements.js';
+import { TRANSITIONS, RULE_LABELS } from '../lib/workflow.js';
+import { PROBLEM, ROLES_TABLE, USER_STORIES, BRIEFING, ASSUMPTIONS, ASSUMPTION_STATUS, NON_FUNCTIONAL } from '../content/requirements.js';
 import { statusBadge } from '../lib/ui.js';
 
 const table = (head, rows) =>
@@ -37,10 +37,10 @@ export default function render(root) {
         ),
       ),
       el('p', { class: 'small muted', text: 'Allowed transitions (generated from the rules the app enforces in src/lib/workflow.js):' }),
-      table(['From', 'To', 'Allowed role'],
+      table(['From', 'To', 'Who may do it'],
         Object.entries(TRANSITIONS).flatMap(([from, tos]) =>
           Object.keys(tos).length
-            ? Object.entries(tos).map(([to, roles]) => [statusBadge(from), statusBadge(to), roles.join(', ')])
+            ? Object.entries(tos).map(([to, rule]) => [statusBadge(from), statusBadge(to), RULE_LABELS[rule]])
             : [[statusBadge(from), el('span', { class: 'muted', text: '(none - final status)' }), '-']],
         ),
       ),
@@ -75,9 +75,16 @@ export default function render(root) {
     ),
 
     el('section', { class: 'card', attrs: { id: 'req-5' } },
-      el('h2', { text: 'Assumptions' }),
-      el('p', { class: 'small muted', text: 'Anything not covered by the briefing. Numbers come from the same constants the app uses.' }),
-      table(['ID', 'Assumption'], ASSUMPTIONS.map((a) => [el('strong', { text: a.id }), a.text])),
+      el('h2', { text: 'Assumptions (revised for production)' }),
+      el('p', { class: 'small muted' }, 'The design evolved deliberately from the assignment version. Each row shows the original assumption, the current one, why it changed, and ', el('strong', { text: 'what is actually built' }), ' on this site today. Numbers come from the same constants the app uses.'),
+      el('div', { class: 'status-legend' }, Object.values(ASSUMPTION_STATUS).map((st) => el('span', { class: `badge ${st.cls}`, text: st.label }))),
+      table(['ID', 'Before (assignment)', 'Now', 'Why it changed', 'Status'], ASSUMPTIONS.map((a) => [
+        el('strong', { text: a.id }),
+        el('span', { class: 'muted', text: a.before }),
+        a.now,
+        a.why,
+        el('span', { class: `badge ${ASSUMPTION_STATUS[a.status].cls}`, text: ASSUMPTION_STATUS[a.status].label }),
+      ])),
     ),
 
     el('section', { class: 'card', attrs: { id: 'req-6' } },

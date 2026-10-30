@@ -10,7 +10,9 @@
 //   public/data/requests.csv         - one row per request
 //   public/data/status_history.csv   - one row per status change
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { DEPARTMENTS, SLA_DAYS, DAY_MS } from '../src/lib/enums.js';
+import { DEPARTMENTS, DAY_MS, FULFILMENT_TEAMS } from '../src/lib/enums.js';
+import { slaDueAt } from '../src/lib/sla.js';
+import { MANAGERS, FULFILLERS, ADMIN, DEMO_STAFF } from '../src/lib/people.js';
 import { toCsv, REQUEST_COLUMNS, HISTORY_COLUMNS, historyRows } from '../src/lib/csv.js';
 
 export const CONFIG = {
@@ -25,6 +27,8 @@ export const CONFIG = {
   REQUESTERS_PER_DEPT: 4,
   BACKLOG_WINDOW_DAYS: 45, // requests submitted in the last N days may be stuck in the queue...
   BACKLOG_PROBABILITY: 0.55, // ...with this probability (stops at Submitted / Under Review / Approved)
+  MANAGER_REQUEST_PROBABILITY: 0.07, // raised by the department's own manager -> decided by Admin
+  WITHDRAW_PROBABILITY: 0.06, // requester withdraws while still Submitted
 };
 
 // ---- Seeded PRNG (mulberry32) -------------------------------------------------
@@ -54,9 +58,8 @@ const FIRST = ['Avery', 'Jordan', 'Kiran', 'Sasha', 'Rowan', 'Tariq', 'Mei', 'Nu
   'Amara', 'Hugo', 'Ishara', 'Felix', 'Nadia', 'Ravi', 'Yuki', 'Elena', 'Kofi', 'Lena', 'Malik', 'Tess'];
 const LAST = ['Fernwood', 'Ashby', 'Kellan', 'Morrow', 'Quill', 'Halden', 'Brightwater', 'Okafor-Lane', 'Senarath',
   'Vale', 'Thorne', 'Delacroix-Ray', 'Wickham', 'Lindqvist', 'Marsh', 'Calloway'];
-const MANAGERS = ['Morgan Ellery (Ops Manager)', 'Devika Ranasuriya (Ops Manager)', 'Theo Blackwood (Ops Manager)'];
-const FULFILLERS = { 'IT Access': 'IT Service Desk', Equipment: 'IT Asset Team', Facilities: 'Facilities Team',
-  'Software Licence': 'IT Service Desk', Other: 'Operations Support' };
+// Managers, fulfillers, Admin and one staff member per department are fixed (src/lib/people.js)
+// so the sample history matches the Demo-mode personas.
 
 // ---- Request content templates (per type) ---------------------------------------
 const TEMPLATES = {
@@ -130,7 +133,7 @@ export function generate(config = CONFIG) {
 
   // Fixed pool of unique fictional requesters per department, so every department
   // appears and the department of a request is drawn from DEPT_WEIGHTS (not from a tiny random pool).
-  const usedNames = new Set();
+  const usedNames = new Set([...Object.values(MANAGERS), ...Object.values(FULFILLERS), ADMIN, ...Object.values(DEMO_STAFF)].map((p) => p.name));
   const uniqueName = () => {
     let n;
     do n = `${pick(FIRST)} ${pick(LAST)}`;
@@ -140,7 +143,7 @@ export function generate(config = CONFIG) {
   };
   let empSeq = 1040;
   const requestersByDept = Object.fromEntries(
-    DEPARTMENTS.map((d) => [d, Array.from({ length: config.REQUESTERS_PER_DEPT }, () => ({ name: uniqueName(), id: `EMP-${empSeq += 7}` }))]),
+    DEPARTMENTS.map((d) => [d, [DEMO_STAFF[d], ...Array.from({ length: config.REQUESTERS_PER_DEPT - 1 }, () => ({ name: uniqueName(), id: `EMP-${empSeq += 7}` }))]]),
   );
 
   const createdTimes = Array.from({ length: config.COUNT }, () => {
@@ -150,31 +153,38 @@ export function generate(config = CONFIG) {
 
   const requests = createdTimes.map((created, idx) => {
     const department = weighted(DEPT_WEIGHTS);
-    const person = pick(requestersByDept[department]);
+    const byManager = rand() < config.MANAGER_REQUEST_PROBABILITY;
+    const person = byManager ? MANAGERS[department] : pick(requestersByDept[department]);
+    const requesterRole = byManager ? 'Manager' : 'Staff';
     const type = weighted(TYPE_WEIGHTS);
     const priority = weighted(PRIORITY_WEIGHTS);
     const [title, desc] = pick(TEMPLATES[type]).map((s) => s.replaceAll('{dept}', department));
-    const manager = pick(MANAGERS);
+    // Approver: the department's manager, or Admin when the manager raised it (A2).
+    const approver = byManager ? { ...ADMIN, role: 'Admin' } : { ...MANAGERS[department], role: 'Manager' };
+    const fulfiller = { ...FULFILLERS[FULFILMENT_TEAMS[type]], role: 'Fulfiller' };
+    const entry = (status, from, at, who, comment) => ({ status, from, at, actor: who.name, actor_id: who.id, role: who.role, comment });
     const stall = () => (rand() < config.STALL_PROBABILITY ? config.STALL_FACTOR : 1);
     const step = (range) => between(range[0], range[1]) * stall() * DAY_MS;
 
-    const history = [{ status: 'Submitted', at: created, actor: person.name, role: 'Staff', comment: 'Request submitted.' }];
+    const history = [entry('Submitted', null, created, { ...person, role: requesterRole }, 'Request submitted.')];
     const r = {
       id: `REQ-${String(idx + 1).padStart(4, '0')}`,
       title,
       description: desc,
       requester_name: person.name,
       requester_id: person.id,
+      requester_role: requesterRole,
       department,
       request_type: type,
       priority,
       status: 'Submitted',
       created_at: iso(created),
       needed_by: new Date(created + Math.round(between(3, 30)) * DAY_MS).toISOString().slice(0, 10),
-      due_at: iso(created + SLA_DAYS[priority] * DAY_MS),
+      due_at: slaDueAt(iso(created), priority),
       approved_at: null,
       rejected_at: null,
       completed_at: null,
+      withdrawn_at: null,
     };
 
     // Backlog: some recent requests are simply still waiting at a random open stage.
@@ -185,8 +195,14 @@ export function generate(config = CONFIG) {
 
     // Walk the workflow; stop at the first step that would happen after AS_OF (or at the backlog stage).
     const tReview = created + step(REVIEW_PICKUP[priority]);
-    if (tReview <= asOf && stopAt !== 'Submitted') {
-      history.push({ status: 'Under Review', at: tReview, actor: manager, role: 'Manager', comment: pick(REVIEW_COMMENTS) });
+    // Some requesters withdraw before the manager picks the request up (A4).
+    const tWithdraw = created + between(0.05, 1) * DAY_MS;
+    if (rand() < config.WITHDRAW_PROBABILITY && tWithdraw < tReview && tWithdraw <= asOf) {
+      r.status = 'Withdrawn';
+      r.withdrawn_at = iso(tWithdraw);
+      history.push(entry('Withdrawn', 'Submitted', tWithdraw, { ...person, role: requesterRole }, 'No longer needed - withdrawn by requester.'));
+    } else if (tReview <= asOf && stopAt !== 'Submitted') {
+      history.push(entry('Under Review', 'Submitted', tReview, approver, pick(REVIEW_COMMENTS)));
       r.status = 'Under Review';
       const tDecision = tReview + step(DECISION[priority]);
       if (tDecision <= asOf && stopAt !== 'Under Review') {
@@ -194,14 +210,12 @@ export function generate(config = CONFIG) {
         const approved = stopAt === 'Approved' || rand() < config.APPROVAL_PROBABILITY;
         r.status = approved ? 'Approved' : 'Rejected';
         r[approved ? 'approved_at' : 'rejected_at'] = iso(tDecision);
-        history.push({ status: r.status, at: tDecision, actor: manager, role: 'Manager',
-          comment: pick(approved ? APPROVE_COMMENTS : REJECT_COMMENTS) });
+        history.push(entry(r.status, 'Under Review', tDecision, approver, pick(approved ? APPROVE_COMMENTS : REJECT_COMMENTS)));
         const tDone = tDecision + step(FULFIL[priority]);
         if (approved && tDone <= asOf && stopAt !== 'Approved') {
           r.status = 'Completed';
           r.completed_at = iso(tDone);
-          history.push({ status: 'Completed', at: tDone, actor: manager, role: 'Manager',
-            comment: `Fulfilled by ${FULFILLERS[type]}.` });
+          history.push(entry('Completed', 'Approved', tDone, fulfiller, `Fulfilled by ${FULFILMENT_TEAMS[type]}.`));
         }
       }
     }
@@ -219,7 +233,7 @@ export function generate(config = CONFIG) {
       as_of: config.AS_OF,
       // Published so the Dataset page documents the exact parameters used (no drift).
       config: { ...config, weights: { department: DEPT_WEIGHTS, request_type: TYPE_WEIGHTS, priority: PRIORITY_WEIGHTS } },
-      note: 'Fictional data. Names and employee IDs are randomly combined and do not refer to real people.',
+      note: 'Fictional data. Requester names are random first/last combinations; managers, fulfillers, Admin and demo staff come from a fixed fictional directory (src/lib/people.js). No real people.',
     },
     requests,
   };

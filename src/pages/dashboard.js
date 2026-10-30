@@ -4,17 +4,18 @@ import {
 } from 'chart.js';
 import { el, pageHeader } from '../lib/dom.js';
 import { DEPARTMENTS, STATUSES, PRIORITIES } from '../lib/enums.js';
-import { getRequests, subscribe, getSource } from '../lib/store.js';
+import { getRequests, subscribe, getSource, getPersona } from '../lib/store.js';
 import { filterRequests, computeKpis, countByKey, weeklyVolume } from '../lib/kpis.js';
 import { KPI_SQL, CHART_SQL, CREATE_TABLE_SQL } from '../lib/sql.js';
-import { isValidDate } from '../lib/workflow.js';
+import { isValidDate, canView } from '../lib/workflow.js';
 
 // Only the Chart.js pieces we use (tree-shaken, bundled locally - no CDN).
 Chart.register(BarController, BarElement, LineController, LineElement, PointElement, DoughnutController, ArcElement,
   CategoryScale, LinearScale, Tooltip, Legend);
 
 // Validated categorical palette (fixed order, never cycled). Slot 1 is used for single-series charts.
-const SERIES = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4'];
+// Six slots for the six statuses (Withdrawn = slot 6).
+const SERIES = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300'];
 const INK = { text: '#1b2333', muted: '#5b667a', grid: '#e6eaf1', surface: '#ffffff' };
 
 Chart.defaults.font.family = "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
@@ -23,9 +24,10 @@ Chart.defaults.animation = false; // instant updates when filters change
 
 const KPI_DEFS = [
   { key: 'open', label: 'Open requests', fmt: (v) => String(v), help: 'Status is Submitted, Under Review or Approved.' },
-  { key: 'overdue', label: 'Overdue requests', fmt: (v) => String(v), help: 'Open and past the SLA due date (Critical 2d, High 5d, Medium 10d, Low 15d from submission).' },
+  { key: 'overdue', label: 'Overdue requests', fmt: (v) => String(v), help: 'Open and past the SLA due time: 17:00 Asia/Colombo on the Nth business day after submission (Critical 1, High 3, Medium 7, Low 10).' },
   { key: 'avgDaysToApproval', label: 'Avg days to approval', fmt: (v) => (v === null ? '-' : `${v} d`), help: 'Mean of (approved_at - created_at) in calendar days, for approved requests.' },
-  { key: 'approvalRate', label: 'Approval rate', fmt: (v) => (v === null ? '-' : `${v}%`), help: 'Approved ÷ (approved + rejected). Undecided requests are excluded; completed ones count as approved.' },
+  { key: 'medianDaysToApproval', label: 'Median days to approval', fmt: (v) => (v === null ? '-' : `${v} d`), help: 'Middle value of the same durations: not skewed by a few very slow approvals.' },
+  { key: 'approvalRate', label: 'Approval rate', fmt: (v) => (v === null ? '-' : `${v}%`), help: 'Approved ÷ (approved + rejected). Undecided and Withdrawn requests are excluded; completed ones count as approved.' },
   { key: 'total', label: 'Total requests', fmt: (v) => String(v), help: 'All requests matching the filters.' },
 ];
 
@@ -52,7 +54,10 @@ export default function render(root) {
       const days = requests.map((r) => r.created_at.slice(0, 10)).sort();
       const bounds = { min: days[0], max: days[days.length - 1] };
       const filters = { from: bounds.min, to: bounds.max, department: '', status: '' };
-      let all = requests;
+      // Dashboard figures cover only what this persona may see (mirrors RLS, A15).
+      const actor = getPersona();
+      const visibleOf = (list) => list.filter((r) => canView(r, actor));
+      let all = visibleOf(requests);
 
       const ui = buildFilterBar(filterBar, filters, bounds, () => update());
       const kpiCards = buildKpis(kpiGrid);
@@ -64,7 +69,7 @@ export default function render(root) {
         const rows = filterRequests(all, filters);
         const k = computeKpis(rows);
         note.textContent =
-          `${rows.length} of ${all.length} requests match. Overdue is evaluated against the current date/time. ` +
+          `${rows.length} of ${all.length} requests visible to ${actor.label} match (${k.withdrawn} withdrawn). Dates use the Asia/Colombo calendar; overdue is evaluated against the current time. ` +
           (getSource() === 'local' ? 'Includes your changes from the Workflow page (saved in this browser).' : 'Showing the original sample data.');
         for (const def of KPI_DEFS) {
           kpiCards[def.key].value.textContent = def.fmt(k[def.key]);
@@ -77,7 +82,7 @@ export default function render(root) {
 
       update();
       unsubscribe = subscribe((list) => {
-        all = list;
+        all = visibleOf(list);
         update();
       });
     })
@@ -250,7 +255,7 @@ function buildCharts(grid, registry) {
       labels: PRIORITIES,
       datasets: [
         { label: 'Open', data: [], backgroundColor: SERIES[0], borderRadius: 4, maxBarThickness: 40, borderColor: INK.surface, borderWidth: { top: 2 } },
-        { label: 'Closed (completed / rejected)', data: [], backgroundColor: SERIES[1], borderRadius: 4, maxBarThickness: 40, borderColor: INK.surface, borderWidth: { top: 2 } },
+        { label: 'Closed (completed / rejected / withdrawn)', data: [], backgroundColor: SERIES[1], borderRadius: 4, maxBarThickness: 40, borderColor: INK.surface, borderWidth: { top: 2 } },
       ],
     },
     options: barOpts('x', true, true),
@@ -299,7 +304,7 @@ function updateCharts(c, rows, filters) {
   c.status.table.replaceChildren(dataTable(['Status', 'Requests', 'Share'], [...byStatus].map(([s, n]) => [s, n, pctOf(n, statusCounts)])));
 
   const open = countByKey(rows.filter((r) => ['Submitted', 'Under Review', 'Approved'].includes(r.status)), 'priority', PRIORITIES);
-  const closed = countByKey(rows.filter((r) => ['Completed', 'Rejected'].includes(r.status)), 'priority', PRIORITIES);
+  const closed = countByKey(rows.filter((r) => ['Completed', 'Rejected', 'Withdrawn'].includes(r.status)), 'priority', PRIORITIES);
   c.priority.chart.data.datasets[0].data = [...open.values()];
   c.priority.chart.data.datasets[1].data = [...closed.values()];
   c.priority.chart.update();
