@@ -121,13 +121,13 @@ export const BRIEFING = [
 
 // Revised assumptions. `before` is the original assignment version; `status` is honest about
 // what is built: 'implemented' (works on this site), 'demo' (enforced in the browser in Demo
-// mode only, database enforcement planned), 'db' (enforced in the browser AND implemented in
-// supabase/migrations with passing DB tests, not yet connected), 'planned', 'roadmap'.
+// mode only), 'db' (enforced in the browser AND implemented in supabase/migrations with passing
+// DB tests, not connected to a live project), 'planned' (designed, not built), 'roadmap'.
 export const ASSUMPTION_STATUS = {
   implemented: { label: 'Implemented', cls: 'badge-ok' },
-  demo: { label: 'Demo mode (browser); DB enforcement planned', cls: 'badge-warn' },
-  db: { label: 'Browser (Demo) + database rules built & tested in CI; goes live with Phase 3', cls: 'badge-info' },
-  planned: { label: 'Planned (Phase 2/3)', cls: 'badge-info' },
+  demo: { label: 'Demo mode (browser); real sign-in is roadmap R1', cls: 'badge-warn' },
+  db: { label: 'Browser (Demo) + database rules built & tested in CI; connecting = roadmap R1', cls: 'badge-info' },
+  planned: { label: 'Designed, not built (roadmap)', cls: '' },
   roadmap: { label: 'Roadmap', cls: '' },
 };
 
