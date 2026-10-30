@@ -7,37 +7,49 @@ export const AI_USAGE = [
   { milestone: 'M3 Workflow', ai: 'Validation + transition rules, store with localStorage, Workflow page, role switcher.', human: 'Reviewed behaviour per role.', verify: '12 unit tests; browser test incl. XSS payloads, tampered storage, reset, mobile width.' },
   { milestone: 'M4 Dashboard', ai: 'KPI functions, SQL generator, charts and filters.', human: 'Reviewed KPI definitions and figures.', verify: 'KPI unit tests; dashboard figures compared with an independent calculation.' },
   { milestone: 'M5 Security', ai: 'Scan jobs, failure gates, results JSON, Security page, Semgrep project rules.', human: 'Asked for a real failing-gate demo (fake token PR), deleted the test branch.', verify: 'Gate proven red in run 41008488731; rules tested against injected violations.' },
+  { milestone: 'H1 Hardening: domain', ai: 'Actor-based rules (department scoping, separation of duties, Withdraw, Admin fallback), business-day SLA with holiday calendar, median KPI, personas, CodeQL gate, revised requirements.', human: 'Defined the revised assumptions and approved the hardening plan (open sign-up, no public Admin, SLA due-time rule).', verify: '44 unit tests incl. history replay of the sample data; end-to-end browser run per persona; all CI gates green on the PR.' },
   { milestone: 'M6 Docs', ai: 'Drafted requirements, user stories, assumptions, this handover.', human: 'To confirm assumptions and add the briefing answers.', verify: 'Content generated from the same constants the app uses where possible.' },
 ];
 
 export const USER_GUIDE = [
   {
-    title: 'Staff: submit a request',
+    title: 'Before you start: pick a persona (Demo mode)',
     steps: [
-      'Select "Staff" in the "Acting as" selector (top right).',
-      'Open Workflow and click "+ New request".',
-      'Fill in your name, employee ID (EMP-1234), department, type, priority, needed-by date, title and description. Errors appear under each field.',
-      'Click "Submit request". The new request is selected and shows status Submitted and its first history entry.',
-      'Return any time to follow its status; the Overdue badge appears if it passes its SLA due date.',
+      'Use the "Acting as" selector (top right) to switch between personas: Leadership, Staff (IT / Finance), Manager (IT / Operations), Fulfiller (IT Service Desk / Facilities Team) and Admin.',
+      'Each persona only sees what that role may see (e.g. Staff see their own requests). The red banner is a reminder that Demo mode is not a login.',
     ],
   },
   {
-    title: 'Manager: review, approve / reject, complete',
+    title: 'Staff: submit or withdraw a request',
     steps: [
-      'Select "Manager" in the header.',
-      'On Workflow, filter by status "Submitted", select a request and click "Start review".',
-      'Add an optional comment and click "Approve", or enter a reason and click "Reject" (a reason is required).',
-      'When an approved request has been fulfilled, select it and click "Mark completed".',
-      'Each action adds a row to the status history with your role, the time and your comment.',
+      'Choose "Staff (IT)". Open Workflow and click "+ New request".',
+      'Your name, employee ID and department are filled in from your profile. Choose type and priority, a needed-by date, and enter a title and description. Errors appear under each field.',
+      'Click "Submit request". The new request shows status Submitted, its SLA due time (business days, shown in your timezone) and its first history entry.',
+      'Changed your mind? While it is still Submitted, select it and click "Withdraw".',
     ],
   },
   {
-    title: 'Leadership: monitor workload',
+    title: 'Manager: review and decide your department\'s requests',
     steps: [
-      'Select "Leadership" (read-only) and open Dashboard.',
-      'Use the date range, department and status filters, or "Last 30 days"; all KPIs and charts update.',
-      'Open "SQL" under any KPI or chart to see how it would be calculated in a database; "View as table" shows the chart data.',
-      'Download the data from Sample Dataset (original data) or Workflow ("Download current CSV/JSON", including your changes).',
+      'Choose "Manager (IT)". You see IT requests only.',
+      'Filter by status "Submitted", select a request and click "Start review".',
+      'Click "Approve" (optional comment) or "Reject" with a reason of at least 10 characters.',
+      'You cannot decide your own requests (an Admin does) or complete requests (the fulfilment team does). The Actions panel explains why an action is not available.',
+    ],
+  },
+  {
+    title: 'Fulfiller: complete approved work',
+    steps: [
+      'Choose "Fulfiller (IT Service Desk)". You see approved/completed IT Access and Software Licence requests.',
+      'Select an Approved request and click "Mark completed" once the work is done.',
+    ],
+  },
+  {
+    title: 'Leadership and Admin',
+    steps: [
+      'Leadership (read-only) sees everything: open Dashboard, use the date range / department / status filters or "Last 30 days"; open "SQL" under any KPI or chart; "View as table" shows chart data.',
+      "Admin sees everything and reviews/decides requests raised by a department's own manager.",
+      'Download data from Sample Dataset (original) or Workflow ("Download current CSV/JSON", including your changes).',
     ],
   },
   {
@@ -45,6 +57,7 @@ export const USER_GUIDE = [
     steps: ['On Workflow, click "Reset to sample data" and confirm. This clears requests and changes stored in this browser.'],
   },
 ];
+
 
 export const RUN_LOCALLY = [
   { title: '1. Run locally', code: 'git clone https://github.com/pemithasgamage2004-ctrl/service-request-portal.git\ncd service-request-portal\nnpm ci\nnpm run dev        # http://localhost:5173' },
@@ -64,7 +77,7 @@ export const CHANGE_GUIDE = [
 ];
 
 export const LIMITATIONS = [
-  'No real authentication or server: roles are simulated and data lives in each browser\'s localStorage, so changes are not shared between users or devices.',
+  'Demo mode only so far: no real authentication or server yet. Personas are simulated and data lives in each browser\'s localStorage. Live mode (Supabase Auth + Postgres RLS) is being added in the hardening phases.',
   'GitHub Pages cannot send HTTP security headers; the CSP is delivered by a meta tag (frame-ancestors/HSTS not possible). Move to a host with header support for production.',
   'Overdue figures use the viewer\'s current time, so the sample data becomes more overdue as days pass.',
   'Next steps for production: backend API + database (schema on the Dashboard page), SSO login with server-side role checks, e-mail/Teams notifications, attachments, audit log export.',

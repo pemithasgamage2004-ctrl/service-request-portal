@@ -206,12 +206,12 @@ function controlsSection() {
   const rows = [
     ['Cross-site scripting (XSS)', 'All rendering via textContent / createTextNode in src/lib/dom.js; innerHTML never used.', 'ESLint no-unsanitized + Semgrep no-html-sinks rule in CI; during development a headless-browser test submitted <img onerror> / <script> payloads and confirmed they render as plain text.'],
     ['Input validation', 'Whitelisted fields, required checks, length limits, enum checks, EMP-#### format, real dates within 0–180 days.', 'Unit tests (tests/workflow.test.js).'],
-    ['Broken workflow / access rules', 'Transition matrix enforced in a pure logic layer (not just hidden buttons): only Manager can review/approve/reject/complete; Rejected and Completed are final; rejection requires a reason.', 'Unit tests cover invalid transitions and wrong roles.'],
+    ['Broken workflow / access rules', "Rules in a pure logic layer (not just hidden buttons): managers act only in their own department; a manager's own request goes to Admin; only the request type's fulfilment team completes; nobody decides or completes their own request; only the requester withdraws; Rejected/Completed/Withdrawn are final; rejection needs a 10+ character reason. (Database enforcement with RLS is planned.)", 'Unit tests for every rule; the whole sample history is replayed through the rules in CI.'],
     ['Untrusted stored data', 'localStorage is re-validated against the schema on load; tampered records are dropped and reported.', 'Unit tests; headless-browser test (during development) that tampers with storage.'],
     ['CSV / formula injection', 'Exported cells starting with = + - @ are prefixed with an apostrophe; RFC 4180 quoting.', 'Unit tests (tests/csv.test.js).'],
     ['Secrets', 'The app needs no secrets; .gitignore excludes env/key files.', 'Gitleaks scans the full history on every run.'],
     ['Vulnerable dependencies', 'One runtime dependency (Chart.js); dev tooling only at build time.', 'npm audit gate + Dependabot.'],
-    ['Simulated roles', 'The role switcher is a demo convenience and is NOT authentication; a real deployment needs server-side auth and authorisation.', 'Stated on the Workflow page and in SECURITY.md.'],
+    ['Simulated roles (Demo mode)', 'The persona switcher is a demo convenience and is NOT authentication; a permanent "Demo mode – not secure" banner says so. Live mode will use Supabase Auth with roles from a server-side profiles table and Postgres RLS.', 'Banner on every page; Requirements A1 status column.'],
   ];
   return el('div', { class: 'card' },
     el('h2', { text: 'Application security controls' }),

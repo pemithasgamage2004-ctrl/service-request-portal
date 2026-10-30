@@ -295,3 +295,4 @@ pre.yaml { max-height: 520px; overflow: auto; font-size: 0.78rem; }
 .demo-banner strong { color: #fecaca; }
 .why-not { margin: 4px 0 8px; padding-left: 18px; }
 .submit-as { margin-top: -4px; }
+.status-legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
