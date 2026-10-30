@@ -182,4 +182,16 @@ export const AI_ISSUES = [
     after: ':not(pre) > code { ...; overflow-wrap: anywhere; }',
     fix: 'Inline code may now wrap anywhere; all six pages re-checked at 375px (no overflow).',
   },
+  {
+    id: 15,
+    date: '2026-10-30',
+    milestone: 'H2 (database)',
+    category: 'Quality / Responsive UI / Process',
+    foundBy: 'Full six-page mobile check (375px) after merge 2 - the regression had already been deployed',
+    issue:
+      'Two AI changes made pages wider than a phone screen, and both reached the live site: the new long status badge on the Requirements page ("Browser (Demo) + database rules built & tested in CI…", 491px, because badges never wrap) and a long unbroken file name in AI log entry #14 on the Handover page. The AI\'s mobile check before those commits only covered four of the six pages, so the overflow was missed.',
+    before: '.badge { white-space: nowrap; }   /* + no wrapping rule for long words in main */',
+    after: 'main { overflow-wrap: break-word; }\n.status-legend .badge, td .badge { white-space: normal; }',
+    fix: 'Long words and status badges now wrap. The pre-commit browser check now always covers all six pages at 1280px and 375px (errors, CSP violations and horizontal overflow), never a subset.',
+  },
 ];

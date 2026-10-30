@@ -236,7 +236,7 @@ function architectureSection() {
     el('p', { class: 'small' },
       el('span', { class: 'badge badge-ok', text: 'Live on this site' }), ' static front end, Demo mode, CI/CD.  ',
       el('span', { class: 'badge badge-info', text: 'Built & tested in CI' }), ' database schema, RLS and functions (supabase/migrations).  ',
-      el('span', { class: 'badge badge-warn', text: 'Planned (Phase 3)' }), ' connecting the site to a Supabase project.'),
+      el('span', { class: 'badge badge-warn', text: 'Roadmap R1' }), ' connecting the site to a Supabase project (not done: the site runs in Demo mode).'),
     el('div', { class: 'arch', attrs: { role: 'img', 'aria-label': 'Browser on GitHub Pages calls Supabase Auth for sign-in and the Supabase REST/RPC API, which runs PostgreSQL with Row Level Security' } },
       box('Browser (GitHub Pages)', ['Vite bundle, no CDN, strict CSP', 'Publishable (anon) key only', 'Client validation for usability', 'Demo mode: localStorage + persona switcher'], 'arch-ok'),
       arrow('① sign in → JWT'),
@@ -246,7 +246,7 @@ function architectureSection() {
     ),
     el('p', { class: 'small muted', text: 'Flow: the browser signs in with Supabase Auth and receives a signed JWT (①); it then calls the Supabase REST/RPC API directly with that JWT (②). PostgreSQL reads the user from the JWT via auth.uid(), so the RLS policies and functions decide what each user can see and do - nothing depends on the browser.' }),
     el('div', { class: 'arch-foot small' },
-      box('GitHub Actions', ['Lint + unit tests, Gitleaks, Semgrep, CodeQL, npm audit, DB/RLS tests on Postgres 16', 'Deploy to Pages only from main when all pass', 'Supabase URL + publishable key injected at build (Phase 3)'], 'arch-ok'),
+      box('GitHub Actions', ['Lint + unit tests, Gitleaks, Semgrep, CodeQL, npm audit, DB/RLS tests on Postgres 16', 'Deploy to Pages only from main when all pass', 'Supabase URL + publishable key injected at build (roadmap R1)'], 'arch-ok'),
     ),
   );
 }
@@ -259,7 +259,7 @@ const THREATS = [
   ['Tampering / Repudiation', 'Editing or deleting status history to hide who approved something.', 'request_history is append-only: no write grants, triggers refuse UPDATE always and DELETE/TRUNCATE without an explicit maintenance flag; each entry stores actor user ID, role and time.', 'tested'],
   ['Tampering (XSS)', 'Script injected via a request title steals the session token from localStorage.', 'All output via textContent; strict CSP (script-src self); ESLint no-unsanitized + Semgrep + CodeQL in CI.', 'implemented'],
   ['Information disclosure', 'Staff or another department reads requests they should not see.', 'RLS SELECT policies per role (A15); history visibility follows the request; KPI view/function are security_invoker; "not visible" and "not found" return the same error.', 'tested'],
-  ['Information disclosure', 'Service-role key or raw database errors leak to the browser.', 'Only the publishable key is shipped; build-time key guard (Phase 3); stable SRP4xx codes mapped to generic messages; Gitleaks on every push.', 'planned'],
+  ['Information disclosure', 'Service-role key or raw database errors leak to the browser.', 'Only the publishable key is shipped; build-time key guard (roadmap R1); stable SRP4xx codes mapped to generic messages; Gitleaks on every push.', 'planned'],
   ['Elevation of privilege', 'A Manager approves their own request or another department\'s; a Manager completes work.', 'Approver/fulfiller rules in transition_request(): own requests go to Admin, department must match, only the type\'s fulfilment team completes.', 'tested'],
   ['Denial of service', 'Sign-up spam or API flooding on the free tier.', 'Supabase Auth rate limits and email quota; open sign-up creates Staff only; nightly demo-data reset. Roadmap: CAPTCHA.', 'planned'],
   ['Supply chain', 'A compromised npm package or GitHub Action.', 'Lockfile + npm ci, npm audit gate, Dependabot, actions pinned to commit SHAs, CodeQL, Postgres image pinned by digest.', 'implemented'],
@@ -267,7 +267,7 @@ const THREATS = [
 const THREAT_STATUS = {
   tested: ['Tested in CI', 'badge-ok'],
   implemented: ['Implemented', 'badge-ok'],
-  planned: ['Planned (Phase 3)', 'badge-warn'],
+  planned: ['Roadmap R1 (not built)', 'badge-warn'],
 };
 
 function threatModelSection() {

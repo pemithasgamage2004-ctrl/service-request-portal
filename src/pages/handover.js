@@ -1,6 +1,6 @@
 import { el, pageHeader } from '../lib/dom.js';
 import { AI_TOOLS, AI_ISSUES } from '../content/aiLog.js';
-import { AI_USAGE, USER_GUIDE, RUN_LOCALLY, CHANGE_GUIDE, LIMITATIONS } from '../content/handover.js';
+import { AI_USAGE, USER_GUIDE, RUN_LOCALLY, CHANGE_GUIDE, LIMITATIONS, GO_LIVE, ROADMAP } from '../content/handover.js';
 
 const REPO_URL = 'https://github.com/pemithasgamage2004-ctrl/service-request-portal';
 const table = (head, rows) =>
@@ -74,8 +74,19 @@ export default function render(root) {
       RUN_LOCALLY.map((s) => el('div', {}, el('h3', { text: s.title }), s.text ? el('p', { text: s.text }) : null, s.code ? codeBlock(s.code) : null)),
       el('h3', { text: 'Common changes' }),
       table(['I want to…', 'Change', 'Then'], CHANGE_GUIDE.map((c) => [c.want, el('code', { text: c.where }), c.then])),
-      el('h3', { text: 'Known limitations & next steps' }),
+      el('h3', { text: 'Known limitations' }),
       el('ul', {}, LIMITATIONS.map((l) => el('li', { text: l }))),
+    ),
+
+    // ---- Go live (roadmap R1) + roadmap
+    el('section', { class: 'card' },
+      el('h2', { text: 'Going live with Supabase (roadmap R1)' }),
+      el('div', { class: 'alert alert-info', text: 'Deliberately not done in this build: the owner chose to keep the site in Demo mode. The database side (supabase/migrations) is complete and tested in CI on every push; these are the remaining steps.' }),
+      GO_LIVE.map((g) => el('div', {}, el('h3', { text: g.title }), el('p', { text: g.text }), g.code ? codeBlock(g.code) : null)),
+    ),
+    el('section', { class: 'card' },
+      el('h2', { text: 'Production gaps & roadmap' }),
+      table(['#', 'Item', 'What is needed', 'Priority'], ROADMAP.map((r) => [el('strong', { text: r.id }), r.item, r.detail, r.priority])),
     ),
   );
 }
