@@ -21,7 +21,7 @@ Thumbs.db
 # CI scan outputs / generated security summary
 ci-results/
 eslint.json
-test-output.txt
+test-results.json
 gitleaks.json
 semgrep.json
 audit.json

@@ -52,8 +52,8 @@ jobs:
         run: |
           npx eslint -f json -o eslint.json . || true
           npx eslint .
-      - name: Unit tests
-        run: npm test 2>&1 | tee test-output.txt
+      - name: Unit tests (Vitest)
+        run: npm test
       - name: Verify sample data is reproducible from the seed
         run: |
           node scripts/generate-data.mjs

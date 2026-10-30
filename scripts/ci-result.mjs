@@ -14,24 +14,22 @@ const readJson = (f) => {
     return null;
   }
 };
-const readText = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : '');
 
 const CHECKS = {
   lint: {
     name: 'Lint & unit tests',
-    tool: 'ESLint 9 (+ eslint-plugin-no-unsanitized) and node:test',
+    tool: 'ESLint 9 (+ eslint-plugin-no-unsanitized) and Vitest',
     gate: 'Any ESLint error or failing unit test fails the job.',
     summarise() {
       const eslint = readJson('eslint.json') || [];
-      const tests = readText('test-output.txt');
-      const num = (re) => Number((tests.match(re) || [])[1] ?? NaN);
+      const tests = readJson('test-results.json'); // Vitest JSON reporter (vitest.config.js)
       return {
         summary: {
           files_linted: eslint.length,
           eslint_errors: eslint.reduce((s, f) => s + f.errorCount, 0),
           eslint_warnings: eslint.reduce((s, f) => s + f.warningCount, 0),
-          tests_passed: num(/^# pass (\d+)/m),
-          tests_failed: num(/^# fail (\d+)/m),
+          tests_passed: tests?.numPassedTests ?? null,
+          tests_failed: tests?.numFailedTests ?? null,
         },
         findings: eslint.flatMap((f) => f.messages.map((m) => ({ rule: m.ruleId, file: f.filePath.replace(/^.*?\/(src|scripts|tests)\//, '$1/'), line: m.line, severity: m.severity === 2 ? 'error' : 'warning' }))).slice(0, 20),
       };

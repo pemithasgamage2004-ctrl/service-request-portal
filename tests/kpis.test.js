@@ -1,4 +1,4 @@
-import { test } from 'node:test';
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 import { filterRequests, computeKpis, countByKey, weekStart, weeklyVolume } from '../src/lib/kpis.js';
 import { KPI_SQL } from '../src/lib/sql.js';

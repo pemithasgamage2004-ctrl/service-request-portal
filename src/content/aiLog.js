@@ -122,4 +122,16 @@ export const AI_ISSUES = [
     after: '@media (max-width: 640px) {\n  .site-nav ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }\n  .site-nav a { white-space: normal; text-align: center; }\n}',
     fix: 'On small screens the nav is a 3-column grid, so all six areas are always visible (verified: 6 of 6 links fully on-screen at 375px); the header is no longer sticky on mobile to save vertical space.',
   },
+  {
+    id: 10,
+    date: '2026-10-30',
+    milestone: 'H1 (hardening)',
+    category: 'Supply chain / Dependency',
+    foundBy: 'npm audit (the same check the CI gate runs), right after install',
+    issue:
+      'When adding Vitest the AI chose `vitest@^3` from its training-time knowledge. That version range depends on tinypool <=2.1.1, which has two CRITICAL prototype-pollution-to-RCE advisories (GHSA-5gmw-xhrv-c9v3, GHSA-85c8-ppgw-ccpr) plus moderate @vitest/mocker advisories. Committing it would have failed the `npm audit --audit-level=critical` gate and blocked deployment.',
+    before: 'npm i -D vitest@^3   ->  3 vulnerabilities (1 moderate, 2 critical)',
+    after: 'npm i -D vitest@5.0.5   ->  found 0 vulnerabilities',
+    fix: 'Checked the current release and its peer requirements (vite ^6.4 || ^7 || ^8, Node >=22.12), installed vitest 5.0.5, raised engines.node to >=22.12, re-ran audit (0 vulnerabilities) and all 25 tests. Lesson: always check current versions instead of relying on remembered ones.',
+  },
 ];
